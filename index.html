@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+	<meta name="theme-color" content="#111827">
+	<title>自転車ルールクイズ</title>
+	<style>
+		:root {
+			color-scheme: dark;
+			--ink: #f8fafc;
+			--muted: #a7b0c2;
+			--panel: rgba(30, 41, 59, 0.78);
+			--line: rgba(148, 163, 184, 0.22);
+			--accent: #5eead4;
+			--accent-strong: #14b8a6;
+			--warm: #fbbf24;
+		}
+
+		* { box-sizing: border-box; }
+
+		html, body {
+			margin: 0;
+			min-height: 100%;
+			background: #111827;
+		}
+
+		body {
+			min-height: 100svh;
+			overflow: hidden;
+			color: var(--ink);
+			font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+			background:
+				radial-gradient(circle at 85% 8%, rgba(20, 184, 166, 0.16), transparent 28%),
+				radial-gradient(circle at 10% 92%, rgba(251, 191, 36, 0.1), transparent 25%),
+				#111827;
+			-webkit-user-select: none;
+			user-select: none;
+			-webkit-touch-callout: none;
+			transition: background 1s ease;
+		}
+		body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .8; transition: background 1s ease; }
+		body.stage-swamp { background: #261319; }
+		body.stage-swamp::before { background: url("images/01_地獄.jpg") center / cover no-repeat; }
+		body.stage-forest { background: #183126; }
+		body.stage-forest::before { background: url("images/02_森.jpg") center / cover no-repeat; }
+		body.stage-meadow { background: #263746; }
+		body.stage-meadow::before { background: url("images/03_街.jpg") center / cover no-repeat; }
+		body.stage-starlight { background: #536477; }
+		body.stage-starlight::before { background: url("images/04_雲の上.jpg") center / cover no-repeat; }
+		body.stage-heaven { background: #b8dff2; }
+		body.stage-heaven::before { background: url("images/05_天国.jpg") center / cover no-repeat; }
+		.ride-scene { position: fixed; right: 5vw; bottom: 12vh; z-index: 0; width: 144px; height: 94px; opacity: .72; pointer-events: none; animation: ride-bob 1.2s ease-in-out infinite; }
+		.ride-scene .wheel { position: absolute; bottom: 4px; width: 42px; height: 42px; border: 3px solid rgba(226, 232, 240, .82); border-radius: 50%; }
+		.ride-scene .wheel::before, .ride-scene .wheel::after { content: ''; position: absolute; left: 50%; top: 50%; width: 100%; height: 1px; background: rgba(226, 232, 240, .35); transform: translate(-50%, -50%) rotate(45deg); }
+		.ride-scene .wheel::after { transform: translate(-50%, -50%) rotate(-45deg); }
+		.ride-scene .rear { left: 8px; }
+		.ride-scene .front { right: 8px; }
+		.ride-scene .frame { position: absolute; left: 29px; bottom: 24px; width: 62px; height: 32px; border-bottom: 3px solid var(--warm); border-left: 3px solid var(--warm); transform: skew(-14deg) rotate(-8deg); }
+		.ride-scene .frame::before { content: ''; position: absolute; left: 27px; top: -1px; width: 34px; height: 2px; background: var(--warm); transform: rotate(52deg); transform-origin: left; }
+		.ride-scene .handlebar { position: absolute; right: 24px; bottom: 56px; width: 15px; height: 13px; border-top: 3px solid var(--warm); border-right: 3px solid var(--warm); transform: rotate(12deg); }
+		.ride-scene .person { position: absolute; left: 52px; top: 8px; width: 52px; height: 62px; }
+		.ride-scene .head { position: absolute; left: 18px; top: 0; width: 14px; height: 14px; border: 2px solid var(--accent); border-radius: 50%; background: #f8cfae; }
+		.ride-scene .body { position: absolute; left: 20px; top: 14px; width: 9px; height: 27px; border-radius: 8px; background: var(--accent); transform: rotate(28deg); }
+		.ride-scene .arm { position: absolute; left: 24px; top: 18px; width: 29px; height: 3px; border-radius: 3px; background: #f8cfae; transform: rotate(22deg); transform-origin: left; }
+		.ride-scene .leg { position: absolute; left: 25px; top: 37px; width: 28px; height: 3px; border-radius: 3px; background: var(--warm); transform: rotate(42deg); transform-origin: left; }
+		.ride-scene .leg.second { left: 25px; top: 39px; transform: rotate(-19deg); }
+		@keyframes ride-bob { 50% { transform: translateY(-3px) rotate(-1deg); } }
+		.ride-scene { display: none; }
+
+		main {
+			display: flex;
+			flex-direction: column;
+			width: min(100%, 760px);
+			min-height: 100svh;
+			margin: auto;
+			padding: max(24px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+			position: relative;
+			z-index: 2;
+		}
+
+		header { padding: 6px 2px 18px; }
+		.eyebrow {
+			margin: 0 0 8px;
+			color: var(--accent);
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: .14em;
+		}
+		h1 { margin: 0; font-size: clamp(25px, 7vw, 38px); letter-spacing: .02em; }
+		.intro { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+
+		.status {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			min-height: 56px;
+			padding: 14px 16px;
+			border: 1px solid var(--line);
+			border-radius: 14px;
+			background: var(--panel);
+			transition: border-color .2s, background .2s;
+		}
+		.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #64748b; }
+		.status strong { font-size: 16px; }
+		.status.is-ready { border-color: rgba(94, 234, 212, .55); background: rgba(13, 148, 136, .16); }
+		.status.is-ready .status-dot { background: var(--accent); box-shadow: 0 0 16px var(--accent); }
+		.status.is-two { border-color: rgba(251, 191, 36, .75); background: rgba(180, 83, 9, .2); }
+		.status.is-two .status-dot { background: var(--warm); box-shadow: 0 0 16px var(--warm); }
+
+		.progress { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: var(--muted); font-size: 12px; }
+		.score { color: var(--warm); font-size: 15px; font-weight: 800; }
+		.stage-name { margin-left: 8px; color: var(--accent); font-weight: 700; }
+		.rank-panel { margin: 0 0 8px; padding: 6px 12px; border: 1px solid rgba(251, 191, 36, .42); border-radius: 12px; background: rgba(15, 23, 42, .7); }
+		.rank-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+		.rank-label { color: var(--muted); font-size: 11px; }
+		.rank-name { color: var(--warm); font-size: 17px; font-weight: 800; }
+		.accuracy { color: var(--ink); font-size: 14px; font-weight: 700; }
+		.rank-track { height: 7px; margin-top: 4px; overflow: hidden; border-radius: 999px; background: rgba(148, 163, 184, .22); }
+		.rank-fill { width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5eead4, #fbbf24); transition: width .5s ease; }
+		.rank-next { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+		.bonus-pop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 20px; background: rgba(2, 6, 23, .3); opacity: 0; pointer-events: none; }
+		.bonus-pop.show { animation: bonus-screen 2.5s ease-out both; }
+		.bonus-card { position: relative; padding: 25px 32px 22px; border: 3px solid #fde68a; border-radius: 22px; color: #422006; background: linear-gradient(145deg, #fef08a, #fbbf24); box-shadow: 0 0 0 8px rgba(254, 240, 138, .2), 0 14px 50px rgba(251, 191, 36, .65); text-align: center; transform: scale(.25) rotate(-8deg); }
+		.bonus-pop.show .bonus-card { animation: bonus-card 1.5s cubic-bezier(.16, 1.4, .35, 1) both; }
+		.bonus-card::before, .bonus-card::after { content: '✦'; position: absolute; color: #fff7ed; font-size: 34px; animation: sparkle 2.5s ease-out both; }
+		.bonus-card::before { top: -28px; left: -23px; }
+		.bonus-card::after { right: -23px; bottom: -28px; animation-delay: .1s; }
+		.bonus-title { display: block; font-size: clamp(25px, 8vw, 48px); font-weight: 900; letter-spacing: .04em; }
+		.bonus-points { display: block; margin-top: 6px; font-size: 20px; font-weight: 900; }
+		@keyframes bonus-screen { 0%, 78% { opacity: 1; } 100% { opacity: 0; } }
+		@keyframes bonus-card { 0% { transform: scale(.25) rotate(-8deg); } 20% { transform: scale(1.12) rotate(3deg); } 34% { transform: scale(.96) rotate(-2deg); } 48%, 78% { transform: scale(1) rotate(0); } 100% { transform: scale(.9) rotate(0); } }
+		@keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(.2) rotate(0); } 25% { opacity: 1; transform: scale(1.2) rotate(25deg); } 60% { opacity: 1; transform: scale(1) rotate(45deg); } }
+		.question-card { position: relative; z-index: 2; margin: 0 9%; padding: 18px 24px; border: 2px solid rgba(251, 191, 36, .72); border-radius: 10px; background: linear-gradient(145deg, rgba(15, 23, 42, .94), rgba(30, 41, 59, .88)); box-shadow: 0 8px 0 rgba(120, 53, 15, .45), 0 12px 28px rgba(0, 0, 0, .26); transform: perspective(600px) rotateX(3deg); }
+		.question-card::after { content: ''; position: absolute; left: 50%; bottom: -17px; width: 5px; height: 16px; background: rgba(251, 191, 36, .72); transform: translateX(-50%); }
+		.question { margin: 0; font-size: clamp(19px, 5vw, 27px); line-height: 1.45; }
+		#touch-surface {
+			position: relative;
+			min-height: 238px;
+			margin: 16px 0;
+			overflow: hidden;
+			border: 1px solid var(--line);
+			border-radius: 22px;
+			background-color: rgba(15, 23, 42, .76);
+			touch-action: none;
+		}
+		.road-view { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+		.road-view::before { content: ''; position: absolute; inset: 0; background: linear-gradient(72deg, transparent 47%, rgba(148, 163, 184, .26) 48%, transparent 49%), linear-gradient(108deg, transparent 47%, rgba(148, 163, 184, .26) 48%, transparent 49%), linear-gradient(to bottom, rgba(14, 116, 144, .08), rgba(15, 23, 42, .72)); }
+		.road-view::after { content: ''; position: absolute; left: 50%; bottom: -8%; width: 5px; height: 58%; background: repeating-linear-gradient(to bottom, rgba(251, 191, 36, .65) 0 18px, transparent 18px 34px); transform: perspective(180px) rotateX(28deg) translateX(-50%); transform-origin: bottom; }
+		.answers { position: absolute; inset: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+		.answer {
+			position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+			min-width: 0; padding: 14px 8px; border: 2px solid rgba(148, 163, 184, .28); border-radius: 16px;
+			color: var(--ink); background: rgba(30, 41, 59, .78); font: inherit; text-align: center; touch-action: none;
+		}
+		.answer-label { margin-bottom: 6px; color: var(--accent); font-size: 12px; font-weight: 800; }
+		.answer-text { font-size: clamp(15px, 4vw, 20px); font-weight: 700; line-height: 1.35; }
+		.answer.selected { border-color: var(--accent); background: rgba(13, 148, 136, .28); }
+		.answer.correct { border-color: var(--accent); background: rgba(13, 148, 136, .35); }
+		.answer.wrong { border-color: #fb7185; background: rgba(190, 24, 93, .22); }
+		.touch-point {
+			position: absolute;
+			width: 76px;
+			height: 76px;
+			margin: -38px 0 0 -38px;
+			border: 3px solid var(--accent);
+			border-radius: 50%;
+			background: rgba(20, 184, 166, .24);
+			box-shadow: 0 0 0 10px rgba(94, 234, 212, .08), 0 0 24px rgba(94, 234, 212, .5);
+			pointer-events: none;
+			animation: appear .16s ease-out;
+		}
+		.touch-point::after {
+			content: attr(data-number);
+			position: absolute;
+			inset: 50% auto auto 50%;
+			transform: translate(-50%, -50%);
+			font-size: 24px;
+			font-weight: 800;
+		}
+		.touch-point.second { border-color: var(--warm); background: rgba(251, 191, 36, .24); box-shadow: 0 0 0 10px rgba(251, 191, 36, .08), 0 0 24px rgba(251, 191, 36, .5); }
+
+		.result { min-height: 58px; margin-bottom: 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+		.result strong { display: block; font-size: 17px; }
+		.result span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+		.category-chart { display: none; margin-bottom: 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+		.category-chart.is-visible { display: block; }
+		.category-chart h2 { margin: 0 0 12px; font-size: 16px; }
+		.radar-wrap { width: min(100%, 560px); margin: auto; }
+		.radar-chart { display: block; width: 100%; height: auto; overflow: visible; }
+		.radar-grid { fill: none; stroke: rgba(148, 163, 184, .3); stroke-width: 1; }
+		.radar-spoke { stroke: rgba(148, 163, 184, .28); stroke-width: 1; }
+		.radar-area { fill: rgba(94, 234, 212, .28); stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+		.radar-dot { fill: var(--warm); stroke: #fff7ed; stroke-width: 2; }
+		.radar-label { fill: var(--ink); font-size: 13px; font-weight: 700; text-anchor: middle; }
+		.radar-value { fill: var(--warm); font-size: 12px; font-weight: 800; text-anchor: middle; }
+		body.is-finished main { justify-content: center; }
+		body.is-finished .progress,
+		body.is-finished .rank-panel,
+		body.is-finished .question-card,
+		body.is-finished #status,
+		body.is-finished #touch-surface,
+		body.is-finished footer { display: none; }
+		body.is-finished .category-chart { order: 1; width: 100%; margin: 0; padding: 24px; border-color: rgba(94, 234, 212, .5); box-shadow: 0 14px 40px rgba(0, 0, 0, .24); }
+		body.is-finished .category-chart h2 { margin-bottom: 20px; font-size: clamp(22px, 5vw, 30px); text-align: center; }
+		body.is-finished .radar-wrap { width: min(100%, 560px); }
+		body.is-finished .result { order: 2; margin: 16px 0 0; border: 0; background: transparent; text-align: center; }
+		body.is-finished .result strong { font-size: 20px; }
+		body.is-finished .result span { font-size: 13px; }
+		body.is-finished .restart-button { width: min(100%, 360px); margin: 16px auto 0; }
+		.restart-button { display: none; width: 100%; margin-top: 10px; padding: 12px; border: 0; border-radius: 12px; color: #042f2e; background: var(--accent); font: inherit; font-weight: 800; }
+		.restart-button.is-visible { display: block; }
+		.metrics { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
+		.metric { padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; background: rgba(30, 41, 59, .58); }
+		.metric-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 11px; }
+		.metric-value { display: block; font-variant-numeric: tabular-nums; font-size: 16px; font-weight: 700; }
+
+		footer { padding-top: 14px; color: #7f8ba1; font-size: 11px; text-align: center; }
+		.handlebar-view { position: fixed; left: 50%; bottom: -24px; z-index: 0; width: 190px; height: 72px; border: 5px solid rgba(226, 232, 240, .25); border-bottom: 0; border-radius: 100px 100px 0 0; transform: translateX(-50%); pointer-events: none; }
+		.handlebar-view::before, .handlebar-view::after { content: ''; position: absolute; top: 7px; width: 42px; height: 17px; border: 5px solid rgba(226, 232, 240, .3); border-bottom: 0; border-radius: 18px 18px 0 0; }
+		.handlebar-view::before { left: -9px; transform: rotate(-16deg); }
+		.handlebar-view::after { right: -9px; transform: rotate(16deg); }
+		@keyframes appear { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+
+		@media (orientation: landscape) and (max-height: 500px) {
+			.handlebar-view { display: none; }
+			main { width: min(100%, 900px); padding: max(8px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-bottom)); }
+			header { padding: 0 2px 5px; }
+			.eyebrow { margin-bottom: 2px; font-size: 9px; }
+			h1 { font-size: 22px; }
+			.intro { display: none; }
+			.progress { margin-bottom: 5px; font-size: 10px; }
+			.score { font-size: 13px; }
+			.rank-panel { margin-bottom: 5px; padding: 5px 9px; }
+			.rank-name { font-size: 14px; }
+			.rank-track { height: 7px; margin-top: 4px; }
+			.rank-next { margin-top: 2px; font-size: 8px; }
+			.question-card { padding: 8px 12px; }
+			.question { font-size: 17px; line-height: 1.25; }
+			.status { min-height: 34px; padding: 7px 10px; }
+			.status-dot { width: 8px; height: 8px; }
+			.status strong { font-size: 13px; }
+			#touch-surface { min-height: 82px; margin: 6px 0; border-radius: 16px; }
+			.answers { inset: 8px; gap: 8px; }
+			.answer { padding: 7px 8px; border-radius: 12px; }
+			.answer-label { margin-bottom: 2px; font-size: 10px; }
+			.answer-text { font-size: 16px; }
+			.touch-point { width: 58px; height: 58px; margin: -29px 0 0 -29px; }
+			.touch-point::after { font-size: 18px; }
+			.result { min-height: 40px; margin-bottom: 6px; padding: 7px 10px; }
+			.result strong { font-size: 13px; }
+			.result span { margin-top: 2px; font-size: 10px; }
+			.next-button { padding: 9px; font-size: 13px; }
+			footer { display: none; }
+		}
+	</style>
+</head>
+	<body>
+	<main>
+		<div class="progress"><span id="question-number">第1問 / 5問</span></div>
+		<section class="rank-panel" aria-label="称号進捗">
+			<div class="rank-line"><span class="rank-label">称号</span><span id="rank-name" class="rank-name">ひよっこ</span></div>
+			<div class="rank-track" role="progressbar" aria-label="スコア進捗" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0"><div id="rank-fill" class="rank-fill"></div></div>
+			<span id="rank-next" class="rank-next">次の称号まであと2点</span>
+		</section>
+		<section class="question-card"><p id="question" class="question"></p></section>
+
+		<section id="status" class="status" aria-live="polite">
+			<span class="status-dot" aria-hidden="true"></span>
+			<strong id="status-text">2人の回答を待っています</strong>
+		</section>
+
+		<div id="touch-surface" aria-label="回答エリア">
+			<div class="road-view" aria-hidden="true"></div>
+			<div class="answers">
+				<button class="answer" data-choice="left" type="button"><span class="answer-label">A</span><span id="answer-left" class="answer-text"></span></button>
+				<button class="answer" data-choice="right" type="button"><span class="answer-label">B</span><span id="answer-right" class="answer-text"></span></button>
+			</div>
+		</div>
+
+		<section id="result" class="result" aria-live="polite"><strong id="result-title">判定結果</strong><span id="result-detail">2人の回答がそろうと判定されます</span><button id="restart-button" class="restart-button" type="button">スタート画面に戻る</button></section>
+		<section id="category-chart" class="category-chart" aria-labelledby="category-chart-title">
+			<h2 id="category-chart-title">分野ごとの正答率</h2>
+			<div class="radar-wrap">
+				<svg id="radar-chart" class="radar-chart" viewBox="0 0 400 360" role="img" aria-label="分野ごとの正答率レーダーチャート"></svg>
+			</div>
+		</section>
+		<footer>判定後、自動的に次の問題へ進みます</footer>
+	</main>
+	<div id="bonus-pop" class="bonus-pop" aria-live="assertive" aria-hidden="true"><div class="bonus-card"><span class="bonus-title">シンクロボーナス！</span><span class="bonus-points">+3点</span></div></div>
+	<script>
+		const questions = [
+			{ category: '基本ルール', text: '自転車は、車道と歩道のどちらを走るのが原則？', left: '車道', right: '歩道', correct: 'left' },
+			{ category: '横断歩道', text: '自転車で横断歩道を渡るとき、正しい行動は？', left: '自転車から降りて押す', right: '乗ったまま速く渡る', correct: 'left' },
+			{ category: '夜間走行', text: '夜、自転車に乗るときに必要なのは？', left: 'ライトを点ける', right: '反射材だけで走る', correct: 'left' },
+			{ category: '交差点', text: '信号のない交差点で、まず確認することは？', left: '左右の安全', right: '前だけを見る', correct: 'left' },
+			{ category: 'ながら運転', text: '自転車に乗りながらスマホを使ってもよい？', left: 'よい', right: 'いけない', correct: 'right' }
+		];
+		const surface = document.querySelector('#touch-surface');
+		const status = document.querySelector('#status');
+		const statusText = document.querySelector('#status-text');
+		const questionNumber = document.querySelector('#question-number');
+		const questionText = document.querySelector('#question');
+		const rankName = document.querySelector('#rank-name');
+		const rankFill = document.querySelector('#rank-fill');
+		const rankTrack = document.querySelector('.rank-track');
+		const rankNext = document.querySelector('#rank-next');
+		const resultTitle = document.querySelector('#result-title');
+		const resultDetail = document.querySelector('#result-detail');
+		const restartButton = document.querySelector('#restart-button');
+		const categoryChart = document.querySelector('#category-chart');
+		const radarChart = document.querySelector('#radar-chart');
+		const bonusPop = document.querySelector('#bonus-pop');
+		const answerButtons = [...document.querySelectorAll('.answer')];
+		const activeTouches = new Map();
+		let questionIndex = 0;
+		let score = 0;
+		let judged = false;
+		const answers = [];
+		const ranks = [
+			{ min: 0, name: 'ひよっこ' },
+			{ min: 2, name: 'かけだし' },
+			{ min: 4, name: '一人前' },
+			{ min: 6, name: '上級' },
+			{ min: 8, name: '達人' },
+			{ min: 10, name: '名人' },
+			{ min: 12, name: '極' },
+			{ min: 15, name: '神' }
+		];
+		const stages = [
+			{ min: 0, name: '地獄', className: 'stage-swamp' },
+			{ min: 3, name: '森', className: 'stage-forest' },
+			{ min: 6, name: '街', className: 'stage-meadow' },
+			{ min: 9, name: '雲の上', className: 'stage-starlight' },
+			{ min: 12, name: '天国', className: 'stage-heaven' }
+		];
+
+		function updateWorld() {
+			const stage = [...stages].reverse().find((item) => score >= item.min);
+			document.body.className = stage.className;
+		}
+
+		function updateRank() {
+			const maxScore = questions.length * 3;
+			const currentRankIndex = [...ranks].reverse().findIndex((rank) => score >= rank.min);
+			const currentRank = ranks[ranks.length - 1 - currentRankIndex];
+			const nextRank = ranks[ranks.indexOf(currentRank) + 1];
+			rankName.textContent = currentRank.name;
+			rankFill.style.width = `${score / maxScore * 100}%`;
+			rankTrack.setAttribute('aria-valuenow', score);
+			rankNext.textContent = nextRank ? `次の称号「${nextRank.name}」まであと${nextRank.min - score}点` : '最高称号「神」に到達';
+		}
+
+		function updatePoint(pointerId, clientX, clientY, choice) {
+			const bounds = surface.getBoundingClientRect();
+			const x = Math.max(0, Math.min(bounds.width, clientX - bounds.left));
+			const y = Math.max(0, Math.min(bounds.height, clientY - bounds.top));
+			activeTouches.set(pointerId, { x, y, choice });
+		}
+
+		function setQuestion() {
+			const current = questions[questionIndex];
+			questionNumber.textContent = `第${questionIndex + 1}問 / ${questions.length}問`;
+			questionText.textContent = current.text;
+			document.querySelector('#answer-left').textContent = current.left;
+			document.querySelector('#answer-right').textContent = current.right;
+			resultTitle.textContent = '判定結果';
+			resultDetail.textContent = '答えを選ぶと判定されます';
+			restartButton.classList.remove('is-visible');
+			categoryChart.classList.remove('is-visible');
+			judged = false;
+			activeTouches.clear();
+			answerButtons.forEach((button) => button.classList.remove('selected', 'correct', 'wrong'));
+			render();
+		}
+
+		function render() {
+			surface.querySelectorAll('.touch-point').forEach((point) => point.remove());
+			const touches = [...activeTouches.values()];
+			touches.forEach((touch, index) => {
+				const point = document.createElement('div');
+				point.className = `touch-point${index === 1 ? ' second' : ''}`;
+				point.dataset.number = index + 1;
+				point.style.left = `${touch.x}px`;
+				point.style.top = `${touch.y}px`;
+				surface.append(point);
+				const button = answerButtons.find((item) => item.dataset.choice === touch.choice);
+				if (button) button.classList.add('selected');
+			});
+			status.className = `status${touches.length === 1 ? ' is-ready' : ''}${touches.length >= 2 ? ' is-two' : ''}`;
+			statusText.textContent = touches.length >= 2 ? '2人の回答を受け付けました' : touches.length === 1 ? '1人目の回答を受け付けました' : '2人の回答を待っています';
+			if (touches.length >= 2 && !judged) judge(touches.slice(0, 2));
+		}
+
+		function judge(touches) {
+			judged = true;
+			const correctChoice = questions[questionIndex].correct;
+			const correctCount = touches.filter((touch) => touch.choice === correctChoice).length;
+			const sameChoice = touches[0].choice === touches[1].choice;
+			const cooperationBonus = sameChoice && correctCount === 2;
+			const points = cooperationBonus ? 3 : correctCount > 0 ? 1 : 0;
+			touches.forEach((touch) => answers.push({ category: questions[questionIndex].category, isCorrect: touch.choice === correctChoice }));
+			score += points;
+			updateWorld();
+			updateRank();
+			answerButtons.forEach((button) => button.classList.add(button.dataset.choice === correctChoice ? 'correct' : 'wrong'));
+			if (cooperationBonus) {
+				showBonus();
+				resultTitle.textContent = 'シンクロボーナス！ +3点';
+				resultDetail.textContent = '2人で同じ正解を選びました。協力プレイ成功です。';
+			} else if (correctCount > 0) {
+				resultTitle.textContent = '正解！ +1点';
+				resultDetail.textContent = '少なくとも1人の答えが正解です。';
+			} else {
+				resultTitle.textContent = '残念、今回は不正解';
+				resultDetail.textContent = '正しい答えは色付きの選択肢です。';
+			}
+			window.setTimeout(() => {
+				if (questionIndex < questions.length - 1) {
+					questionIndex += 1;
+					setQuestion();
+					return;
+				}
+				finishGame();
+			}, 2500);
+		}
+
+		function showBonus() {
+			bonusPop.classList.remove('show');
+			bonusPop.setAttribute('aria-hidden', 'false');
+			void bonusPop.offsetWidth;
+			bonusPop.classList.add('show');
+			window.setTimeout(() => bonusPop.setAttribute('aria-hidden', 'true'), 2500);
+		}
+
+		function finishGame() {
+			document.body.classList.add('is-finished');
+			questionNumber.textContent = 'クイズ終了';
+			questionText.textContent = `全${questions.length}問終了！`;
+			statusText.textContent = `最終スコアを確認してください`;
+			resultTitle.textContent = 'おつかれさまでした';
+			resultDetail.textContent = '自転車ルールを確認できました。';
+			showCategoryChart();
+			restartButton.classList.add('is-visible');
+		}
+
+		function showCategoryChart() {
+			const results = questions.map((question) => {
+				const categoryAnswers = answers.filter((answer) => answer.category === question.category);
+				const correctAnswers = categoryAnswers.filter((answer) => answer.isCorrect).length;
+				return { category: question.category, rate: correctAnswers / categoryAnswers.length * 100 };
+			});
+			const center = { x: 200, y: 178 };
+			const radius = 112;
+			const angleStep = Math.PI * 2 / results.length;
+			const pointAt = (index, value) => {
+				const angle = -Math.PI / 2 + index * angleStep;
+				return {
+					x: center.x + Math.cos(angle) * radius * value,
+					y: center.y + Math.sin(angle) * radius * value
+				};
+			};
+			const points = (value) => results.map((_, index) => {
+				const point = pointAt(index, value);
+				return `${point.x},${point.y}`;
+			}).join(' ');
+			const grid = [0.2, 0.4, 0.6, 0.8, 1].map((level) => `<polygon class="radar-grid" points="${points(level)}"></polygon>`).join('');
+			const spokes = results.map((_, index) => {
+				const point = pointAt(index, 1);
+				return `<line class="radar-spoke" x1="${center.x}" y1="${center.y}" x2="${point.x}" y2="${point.y}"></line>`;
+			}).join('');
+			const areaPoints = results.map((result, index) => {
+				const point = pointAt(index, result.rate / 100);
+				return `${point.x},${point.y}`;
+			}).join(' ');
+			const labels = results.map((result, index) => {
+				const labelPoint = pointAt(index, 1.2);
+				const valuePoint = pointAt(index, Math.min(1.08, Math.max(.9, result.rate / 100 + .12)));
+				return `<text class="radar-label" x="${labelPoint.x}" y="${labelPoint.y}">${result.category}</text><text class="radar-value" x="${valuePoint.x}" y="${valuePoint.y}">${result.rate}%</text>`;
+			}).join('');
+			const dots = results.map((result, index) => {
+				const point = pointAt(index, result.rate / 100);
+				return `<circle class="radar-dot" cx="${point.x}" cy="${point.y}" r="5"></circle>`;
+			}).join('');
+			radarChart.innerHTML = `${grid}${spokes}<polygon class="radar-area" points="${areaPoints}"></polygon>${dots}${labels}`;
+			categoryChart.classList.add('is-visible');
+		}
+
+		surface.addEventListener('pointerdown', (event) => {
+			event.preventDefault();
+			if (judged) return;
+			if (event.isTrusted) surface.setPointerCapture(event.pointerId);
+			const choice = event.clientX < surface.getBoundingClientRect().left + surface.clientWidth / 2 ? 'left' : 'right';
+			updatePoint(event.pointerId, event.clientX, event.clientY, choice);
+			render();
+		});
+		surface.addEventListener('pointermove', (event) => {
+			if (!activeTouches.has(event.pointerId) || judged) return;
+			event.preventDefault();
+			const choice = event.clientX < surface.getBoundingClientRect().left + surface.clientWidth / 2 ? 'left' : 'right';
+			updatePoint(event.pointerId, event.clientX, event.clientY, choice);
+			render();
+		});
+		function releasePointer(event) {
+			if (judged) return;
+			activeTouches.delete(event.pointerId);
+			render();
+		}
+		surface.addEventListener('pointerup', releasePointer);
+		surface.addEventListener('pointercancel', releasePointer);
+		surface.addEventListener('lostpointercapture', (event) => {
+			if (activeTouches.has(event.pointerId)) releasePointer(event);
+		});
+		restartButton.addEventListener('click', () => {
+			window.location.href = 'start.html';
+		});
+		updateWorld();
+		updateRank();
+		setQuestion();
+	</script>
+</body>
+</html>

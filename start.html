@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#111827">
+  <title>自転車ルールクイズ</title>
+  <style>
+    :root { color-scheme: dark; --ink: #f8fafc; --muted: #a7b0c2; --accent: #5eead4; --warm: #fbbf24; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { min-height: 100svh; overflow: hidden; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #261319 url("images/01_地獄.jpg") center / cover no-repeat; -webkit-user-select: none; user-select: none; }
+    body::before { content: ''; position: fixed; inset: 0; background: rgba(9, 25, 24, .42); pointer-events: none; }
+    .start-screen { display: flex; flex-direction: column; justify-content: center; width: min(100%, 760px); min-height: 100svh; margin: auto; padding: max(24px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); position: relative; z-index: 1; }
+    .start-eyebrow { margin: 0 0 10px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .16em; }
+    h1 { max-width: 620px; margin: 0; font-size: clamp(30px, 8vw, 52px); line-height: 1.2; }
+    .lead { max-width: 560px; margin: 16px 0 24px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+    .rules-card { max-width: 620px; padding: 18px; border: 1px solid rgba(94, 234, 212, .35); border-radius: 16px; background: rgba(15, 23, 42, .82); }
+    .rules-card h2 { margin: 0 0 12px; color: var(--accent); font-size: 16px; }
+    ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    li { display: flex; gap: 10px; align-items: baseline; color: var(--ink); font-size: 14px; line-height: 1.5; }
+    li::before { content: '●'; color: var(--warm); font-size: 10px; }
+    button { width: min(100%, 360px); margin-top: 24px; padding: 16px 20px; border: 0; border-radius: 14px; color: #042f2e; background: var(--accent); box-shadow: 0 8px 0 rgba(13, 148, 136, .45); font: inherit; font-size: 17px; font-weight: 800; }
+    button:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(13, 148, 136, .45); }
+    @media (orientation: landscape) and (max-height: 500px) {
+      .start-screen { padding: 10px max(16px, env(safe-area-inset-left)); }
+      .start-eyebrow { margin-bottom: 4px; font-size: 9px; }
+      h1 { font-size: 25px; }
+      .lead { margin: 6px 0 10px; font-size: 12px; }
+      .rules-card { padding: 9px 12px; }
+      .rules-card h2 { margin-bottom: 5px; font-size: 13px; }
+      ul { gap: 3px; }
+      li { font-size: 11px; }
+      button { margin-top: 10px; padding: 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="start-screen">
+    <p class="start-eyebrow">FAMILY BIKE QUIZ</p>
+    <h1>自転車ルールクイズ</h1>
+    <p class="lead">2人で自転車のルールに答えて、称号をゲットしよう。</p>
+    <section class="rules-card" aria-labelledby="rules-title">
+      <h2 id="rules-title">あそびかた</h2>
+      <ul>
+        <li>画面の左右から、2人がそれぞれ答えを選びます。</li>
+        <li>2人で同じ正解を選ぶと、協力ボーナスで＋3点。</li>
+        <li>得点がたまると、称号がひよっこから神へ進みます。</li>
+      </ul>
+    </section>
+    <button type="button" onclick="location.href='index.html'">クイズを始める</button>
+  </main>
+</body>
+</html>
