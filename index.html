@@ -44,18 +44,18 @@
 		}
 		body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .8; transition: background 1s ease; }
 		body.stage-swamp { background: #261319; }
-		body.stage-swamp::before { background: url("images/01_地獄.jpg") center / cover no-repeat; }
+		body.stage-swamp::before { background: url("images/01.jpg") center / cover no-repeat; }
 		body.stage-forest { background: #183126; }
-		body.stage-forest::before { background: url("images/02_森.jpg") center / cover no-repeat; }
+		body.stage-forest::before { background: url("images/02.jpg") center / cover no-repeat; }
 		body.stage-meadow { background: #263746; }
-		body.stage-meadow::before { background: url("images/03_街.jpg") center / cover no-repeat; }
+		body.stage-meadow::before { background: url("images/03.jpg") center / cover no-repeat; }
 		body.stage-starlight { background: #536477; }
 		body.stage-starlight::before { background: url("images/04_雲の上.jpg") center / cover no-repeat; }
 		body.stage-heaven { background: #b8dff2; }
 		body.stage-heaven::before { background: url("images/05_天国.jpg") center / cover no-repeat; }
-		body.phase-timed.stage-swamp::before { background-image: url("images/01_地獄.jpg"); }
-		body.phase-relaxed.stage-forest::before { background-image: url("images/02_森.jpg"); }
-		body.phase-spot.stage-swamp::before { background-image: url("images/01_地獄.jpg"); }
+		body.phase-timed.stage-swamp::before { background-image: url("images/01.jpg"); }
+		body.phase-relaxed.stage-forest::before { background-image: url("images/02.jpg"); }
+		body.phase-spot.stage-meadow::before { background-image: url("images/03.jpg"); }
 		body.show-final-results { background: #111827; }
 		body.show-final-results::before { background: none; opacity: 0; }
 		.ride-scene { position: fixed; right: 5vw; bottom: 12vh; z-index: 0; width: 144px; height: 94px; opacity: .72; pointer-events: none; animation: ride-bob 1.2s ease-in-out infinite; }
@@ -448,7 +448,7 @@
 		<footer>決定後、正解と解説を確認して次へ進みます</footer>
 		<section id="spot-stage" class="spot-stage" aria-label="地獄の間違い探し">
 			<div class="spot-pair">
-				<div id="spot-diff-image" class="spot-image" aria-label="問題箇所を探す画像"><img src="images/01_地獄.jpg" alt="問題のある場所を探す地獄の風景"><span class="spot-image-label">問題箇所をさがして</span><span class="diff-edit diff-window" aria-hidden="true"></span><span class="diff-edit diff-flame" aria-hidden="true"></span><span class="diff-edit diff-skull" aria-hidden="true"></span></div>
+				<div id="spot-diff-image" class="spot-image" aria-label="問題箇所を探す画像"><img src="images/03.jpg" alt="問題のある場所を探す風景"><span class="spot-image-label">問題箇所をさがして</span><span class="diff-edit diff-window" aria-hidden="true"></span><span class="diff-edit diff-flame" aria-hidden="true"></span><span class="diff-edit diff-skull" aria-hidden="true"></span></div>
 			</div>
 			<div class="spot-controls"><span id="spot-count" class="spot-count">問題箇所をタップして印をつけよう</span></div>
 			<div class="spot-decision-row"><button id="spot-clear" class="spot-clear" type="button">クリア</button><button id="spot-confirm" class="spot-confirm" type="button" disabled>決定</button></div>
@@ -494,7 +494,7 @@
 		<p class="spot-feedback-title">FINAL STAGE / ANSWER CHECK</p>
 		<h2 id="spot-feedback-count" class="spot-feedback-count"></h2>
 		<p id="spot-feedback-points" class="spot-feedback-points"></p>
-		<div class="spot-feedback-image"><img src="images/01_地獄.jpg" alt="地獄の問題箇所と正解位置"><div id="feedback-markers"></div></div>
+		<div class="spot-feedback-image"><img src="images/03.jpg" alt="問題箇所と正解位置の風景"><div id="feedback-markers"></div></div>
 		<p class="feedback-legend">緑: 発見　赤: 見逃し</p>
 		<button id="show-results-button" class="show-results-button" type="button">結果発表へ</button>
 	</section>
@@ -602,7 +602,7 @@
 		let draggedPin = null;
 
 		function updateWorld() {
-			const backgroundClass = phase === 'relaxed' ? 'stage-forest' : 'stage-swamp';
+			const backgroundClass = phase === 'relaxed' ? 'stage-forest' : phase === 'spot' ? 'stage-meadow' : 'stage-swamp';
 			document.body.className = `phase-${phase} ${backgroundClass}`;
 			main.classList.toggle('phase-timed', phase === 'timed');
 		}
