@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#111827">
-  <title>自転車ルールクイズ</title>
+  <title>親子で自転車ルールクイズ</title>
   <style>
     :root { color-scheme: dark; --ink: #f8fafc; --muted: #a7b0c2; --accent: #5eead4; --warm: #fbbf24; }
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; }
-    body { min-height: 100svh; overflow: hidden; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #261319 url("images/01_地獄.jpg") center / cover no-repeat; -webkit-user-select: none; user-select: none; }
+    body { min-height: 100svh; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #261319 url("images/01_地獄.jpg") center / cover no-repeat; -webkit-user-select: none; user-select: none; }
     body::before { content: ''; position: fixed; inset: 0; background: rgba(9, 25, 24, .42); pointer-events: none; }
     .start-screen { display: flex; flex-direction: column; justify-content: center; width: min(100%, 760px); min-height: 100svh; margin: auto; padding: max(24px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); position: relative; z-index: 1; }
     .start-eyebrow { margin: 0 0 10px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .16em; }
@@ -33,19 +33,34 @@
       li { font-size: 11px; }
       button { margin-top: 10px; padding: 10px; font-size: 13px; }
     }
+    @media (orientation: landscape) and (max-height: 340px) {
+      .start-screen { padding-top: 3px; padding-bottom: 3px; }
+      .start-eyebrow { margin-bottom: 1px; font-size: 7px; }
+      h1 { font-size: 20px; line-height: 1.05; }
+      .lead { margin: 3px 0 5px; font-size: 9px; line-height: 1.25; }
+      .rules-card { padding: 5px 9px; }
+      .rules-card h2 { margin-bottom: 3px; font-size: 11px; }
+      ul { gap: 1px; }
+      li { gap: 6px; font-size: 9px; line-height: 1.2; }
+      li::before { font-size: 7px; }
+      button { margin-top: 6px; padding: 7px 12px; font-size: 11px; box-shadow: 0 4px 0 rgba(13, 148, 136, .45); }
+    }
   </style>
 </head>
 <body>
   <main class="start-screen">
     <p class="start-eyebrow">FAMILY BIKE QUIZ</p>
-    <h1>自転車ルールクイズ</h1>
-    <p class="lead">2人で自転車のルールに答えて、称号をゲットしよう。</p>
+    <h1>親子でチャレンジ！<br>自転車ルールクイズ</h1>
+    <p class="lead">親子で同じ答えを選んで、息を合わせて称号をゲットしよう。</p>
     <section class="rules-card" aria-labelledby="rules-title">
       <h2 id="rules-title">あそびかた</h2>
       <ul>
-        <li>画面の左右から、2人がそれぞれ答えを選びます。</li>
-        <li>2人で同じ正解を選ぶと、協力ボーナスで＋3点。</li>
-        <li>得点がたまると、称号がひよっこから神へ進みます。</li>
+        <li>第1ステージは11問。20秒以内に親と子のピンを置くと自動で回答します。</li>
+        <li>2人とも同じ正解なら＋3点、片方だけ正解なら＋1点です。</li>
+        <li>時間切れは0点で次の問題へ進みます。</li>
+        <li>第2ステージは時間制限なしの5問です。2人の回答後に決定を押します。</li>
+        <li>最終ステージは地獄の画像から問題箇所を探します。複数選んで決定します。</li>
+        <li>得点に応じて、称号がひよっこから神へ進みます。</li>
       </ul>
     </section>
     <button type="button" onclick="location.href='index.html'">クイズを始める</button>

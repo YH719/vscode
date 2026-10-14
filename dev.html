@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>開発メニュー | 親子で自転車ルールクイズ</title>
+  <style>
+    :root { color-scheme: dark; --ink: #f8fafc; --muted: #a7b0c2; --accent: #5eead4; --warm: #fbbf24; --line: rgba(148, 163, 184, .25); }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { min-height: 100svh; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: radial-gradient(ellipse at 90% 0%, rgba(20,184,166,.18), transparent 32%), #111827; }
+    main { width: min(100%, 920px); min-height: 100svh; margin: auto; padding: max(22px, env(safe-area-inset-top)) 22px max(18px, env(safe-area-inset-bottom)); }
+    header { display: flex; justify-content: space-between; align-items: end; gap: 16px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 5px; color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: .12em; }
+    h1 { margin: 0; font-size: 24px; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 12px; }
+    .stage { padding: 13px 0 12px; border-bottom: 1px solid var(--line); }
+    .stage-heading { display: flex; align-items: baseline; gap: 10px; margin: 0 0 8px; }
+    .stage-heading h2 { margin: 0; font-size: 16px; }
+    .stage-heading span { color: var(--muted); font-size: 11px; }
+    .question-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    a { display: flex; align-items: center; gap: 7px; min-width: 0; min-height: 38px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(30, 41, 59, .74); text-decoration: none; }
+    a:hover, a:focus-visible { border-color: var(--accent); background: rgba(13, 148, 136, .22); outline: none; }
+    .number { flex: 0 0 auto; color: var(--warm); font-size: 11px; font-weight: 900; }
+    .question { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .stage-final { border-bottom: 0; }
+    .final-link { display: inline-flex; min-width: 210px; min-height: 42px; border-color: rgba(251,191,36,.4); }
+    @media (orientation: landscape) and (max-height: 500px) {
+      main { padding: 8px max(18px, env(safe-area-inset-left)) 6px; }
+      header { align-items: center; padding-bottom: 7px; }
+      .eyebrow { margin-bottom: 2px; font-size: 8px; }
+      h1 { font-size: 19px; }
+      .subtitle { font-size: 10px; }
+      .stage { padding: 6px 0; }
+      .stage-heading { margin-bottom: 5px; }
+      .stage-heading h2 { font-size: 13px; }
+      .stage-heading span { font-size: 9px; }
+      .question-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+      a { min-height: 32px; padding: 4px 6px; gap: 5px; }
+      .question { font-size: 9px; }
+      .number { font-size: 9px; }
+      .final-link { min-height: 34px; }
+    }
+    @media (max-width: 560px) and (orientation: portrait) {
+      .question-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      header { align-items: start; flex-direction: column; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><p class="eyebrow">DEVELOPMENT ONLY</p><h1>クイズ開発メニュー</h1></div>
+      <p class="subtitle">確認したい問題を選ぶと、その画面から開始します。</p>
+    </header>
+
+    <section class="stage" aria-labelledby="stage-one-title">
+      <div class="stage-heading"><h2 id="stage-one-title">第1ステージ: 時間制限あり</h2><span>20秒 / 11問</span></div>
+      <nav id="timed-questions" class="question-grid" aria-label="第1ステージの問題"></nav>
+    </section>
+
+    <section class="stage" aria-labelledby="stage-two-title">
+      <div class="stage-heading"><h2 id="stage-two-title">第2ステージ: 時間制限なし</h2><span>5問</span></div>
+      <nav id="relaxed-questions" class="question-grid" aria-label="第2ステージの問題"></nav>
+    </section>
+
+    <section class="stage stage-final" aria-labelledby="stage-final-title">
+      <div class="stage-heading"><h2 id="stage-final-title">最終ステージ</h2><span>地獄の問題箇所探し</span></div>
+      <a class="final-link" href="index.html?dev=1&amp;stage=spot"><span class="number">GO</span><span class="question">問題箇所探しへ直接移動</span></a>
+    </section>
+  </main>
+  <script>
+    const timedLabels = [
+      '車道の左側', '停車中の車', '止まれの標識', '自転車の二人乗り', '横断歩道の歩行者', '雨の日のかさ',
+      '歩道の歩行者', 'イヤホンの使用', '友達との並進', 'ハンドルの荷物', 'ブレーキの安全点検'
+    ];
+    const relaxedLabels = [
+      '赤信号と罰金', '青切符の対象年齢', '歩道を通れる条件', '歩道の通行位置', '車道通行の年齢'
+    ];
+
+    function addQuestionLinks(containerId, stage, labels) {
+      const container = document.querySelector(`#${containerId}`);
+      labels.forEach((label, index) => {
+        const link = document.createElement('a');
+        link.href = `index.html?dev=1&stage=${stage}&q=${index + 1}`;
+        link.innerHTML = `<span class="number">${String(index + 1).padStart(2, '0')}</span><span class="question"></span>`;
+        link.querySelector('.question').textContent = label;
+        link.setAttribute('aria-label', `${index + 1}問目: ${label}へ移動`);
+        container.append(link);
+      });
+    }
+
+    addQuestionLinks('timed-questions', 'timed', timedLabels);
+    addQuestionLinks('relaxed-questions', 'relaxed', relaxedLabels);
+  </script>
+</body>
+</html>
