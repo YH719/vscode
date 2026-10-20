@@ -55,9 +55,13 @@
 		body.stage-heaven::before { background: url("images/05_天国.jpg") center / cover no-repeat; }
 		body.phase-timed.stage-swamp::before { background-image: url("images/01.jpg"); }
 		body.phase-relaxed.stage-forest::before { background-image: url("images/02.jpg"); }
-		body.phase-spot.stage-meadow::before { background-image: url("images/03.jpg"); }
+		body.phase-spot.stage-meadow::before { background: none; }
 		body.show-final-results { background: #111827; }
 		body.show-final-results::before { background: none; opacity: 0; }
+		#spot-background { display: none; position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+		body.phase-spot #spot-background { display: block; }
+		#spot-background-image { position: absolute; left: 50%; top: 50%; width: max(100vw, 150svh); aspect-ratio: 3 / 2; transform: translate(-50%, -50%); }
+		#spot-background-image img { display: block; width: 100%; height: 100%; }
 		.ride-scene { position: fixed; right: 5vw; bottom: 12vh; z-index: 0; width: 144px; height: 94px; opacity: .72; pointer-events: none; animation: ride-bob 1.2s ease-in-out infinite; }
 		.ride-scene .wheel { position: absolute; bottom: 4px; width: 42px; height: 42px; border: 3px solid rgba(226, 232, 240, .82); border-radius: 50%; }
 		.ride-scene .wheel::before, .ride-scene .wheel::after { content: ''; position: absolute; left: 50%; top: 50%; width: 100%; height: 1px; background: rgba(226, 232, 240, .35); transform: translate(-50%, -50%) rotate(45deg); }
@@ -259,25 +263,22 @@
 		.accuracy-row.combined .accuracy-fill { background: linear-gradient(90deg, #c4b5fd, #60a5fa); }
 		.accuracy-row.combined .accuracy-person { color: #bfdbfe; }
 		.accuracy-value { color: var(--ink); font-size: 12px; font-weight: 800; text-align: right; white-space: nowrap; }
-		.spot-pair { display: grid; flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr); justify-items: center; }
-		.spot-image { position: relative; align-self: center; width: min(100%, 900px); height: auto; aspect-ratio: 3 / 2; overflow: hidden; border: 1px solid rgba(255,255,255,.38); border-radius: 10px; background: #261319; touch-action: manipulation; }
-		.spot-image img { display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
-		.spot-image-label { position: absolute; left: 6px; top: 5px; z-index: 2; padding: 3px 7px; border-radius: 5px; color: white; background: rgba(2, 6, 23, .72); font-size: 10px; font-weight: 800; pointer-events: none; }
 		.diff-edit { position: absolute; z-index: 1; pointer-events: none; }
 		.diff-window { left: 78%; top: 25%; width: 5%; height: 8%; border: 2px solid #ffed9e; background: #ff5b19; box-shadow: 0 0 12px 5px rgba(255, 76, 10, .9); }
 		.diff-flame { left: 67%; top: 54%; width: 6%; height: 13%; border-radius: 55% 45% 55% 45%; background: radial-gradient(ellipse at 50% 72%, #fff6a3 0 18%, #ffbd32 24% 48%, #f04416 65%, transparent 72%); filter: drop-shadow(0 0 8px #ff681d); transform: rotate(12deg); }
 		.diff-skull { left: 88%; top: 77%; width: 5%; height: 7%; border-radius: 48% 48% 42% 42%; background: #eee5cd; box-shadow: inset -3px -2px 0 #9e8b7a; }
 		.diff-skull::before { content: ''; position: absolute; left: 18%; top: 35%; width: 64%; height: 32%; background: radial-gradient(circle at 25% 45%, #241b20 0 20%, transparent 24%), radial-gradient(circle at 75% 45%, #241b20 0 20%, transparent 24%); }
 		.diff-skull::after { content: ''; position: absolute; left: 35%; bottom: -10%; width: 30%; height: 25%; background: repeating-linear-gradient(90deg, #eee5cd 0 2px, #716257 2px 3px); }
-		.spot-marker { position: absolute; z-index: 3; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 3px solid #5eead4; border-radius: 50%; color: white; background: rgba(20, 184, 166, .58); font-size: 13px; font-weight: 900; line-height: 28px; text-align: center; box-shadow: 0 0 0 3px rgba(20,184,166,.25); pointer-events: none; }
-		.spot-controls { display: flex; align-items: center; gap: 8px; padding-top: 6px; }
+		.spot-marker { position: fixed; z-index: 3; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 3px solid #5eead4; border-radius: 50%; color: white; background: rgba(20, 184, 166, .58); font-size: 13px; font-weight: 900; line-height: 28px; text-align: center; box-shadow: 0 0 0 3px rgba(20,184,166,.25); pointer-events: none; }
+		.spot-controls { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: rgba(2, 6, 23, .76); backdrop-filter: blur(4px); }
 		.spot-count { flex: 1; color: var(--muted); font-size: 11px; }
 		.spot-clear, .spot-confirm { min-height: 38px; padding: 8px 16px; border: 0; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 800; }
 		.spot-clear { color: var(--ink); background: rgba(71, 85, 105, .9); }
-		.spot-decision-row { display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 54px; padding-top: 4px; }
+		.spot-decision-row { position: relative; display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 54px; padding-top: 4px; }
 		.spot-confirm { min-width: 150px; min-height: 42px; color: #042f2e; background: var(--accent); font-size: 15px; }
 		.spot-confirm:disabled { opacity: .45; }
 		main.phase-spot .rank-panel, main.phase-spot #status, main.phase-spot #touch-surface, main.phase-spot .answer-controls, main.phase-spot footer { display: none; }
+		main.phase-spot .spot-pair { display: none; }
 		main.phase-spot .question-card { margin: 0 0 6px; padding: 6px 12px; }
 		main.phase-spot .question { font-size: 15px; }
 		body.show-final-results main { display: none; }
@@ -343,7 +344,6 @@
 			.show-results-button { min-height: 32px; min-width: 160px; padding: 5px 12px; font-size: 11px; }
 			.timer-track { width: 82px; height: 6px; }
 			.spot-image { max-height: 100%; }
-			main.phase-spot .spot-image { width: min(100%, 900px, calc((100svh - 115px) * 1.5)); max-height: calc(100svh - 115px); }
 			.spot-marker { width: 28px; height: 28px; margin: -14px 0 0 -14px; font-size: 11px; line-height: 22px; }
 			.spot-controls { padding-top: 3px; }
 			.spot-clear { min-height: 36px; padding: 5px 12px; font-size: 12px; }
@@ -390,7 +390,6 @@
 			.decision-button { min-height: 31px; min-width: 118px; margin: 2px 0; padding: 4px 12px; font-size: 11px; }
 			main.phase-spot .question-card { padding: 4px 9px; }
 			main.phase-spot .question { font-size: 13px; }
-			main.phase-spot .spot-image { width: min(100%, 900px, calc((100svh - 88px) * 1.5)); max-height: calc(100svh - 88px); }
 			.spot-controls { padding-top: 2px; }
 			.spot-decision-row { min-height: 35px; padding-top: 1px; }
 			.spot-clear { min-height: 29px; padding: 4px 10px; font-size: 10px; }
@@ -420,6 +419,12 @@
 	</style>
 </head>
 	<body>
+	<div id="spot-background" aria-hidden="true">
+		<div id="spot-background-image">
+			<img src="images/03.jpg" alt="">
+			<span class="diff-edit diff-window"></span><span class="diff-edit diff-flame"></span><span class="diff-edit diff-skull"></span>
+		</div>
+	</div>
 	<main>
 		<div class="progress"><span id="question-number">STAGE 1  第1問 / 11問</span><span id="timer-box" class="timer-box"><span id="timer-value">20秒</span><span class="timer-track"><span id="timer-fill" class="timer-fill"></span></span></span></div>
 		<section class="rank-panel" aria-label="親子の称号進捗">
@@ -449,10 +454,7 @@
 
 		<footer>決定後、正解と解説を確認して次へ進みます</footer>
 		<section id="spot-stage" class="spot-stage" aria-label="地獄の間違い探し">
-			<div class="spot-pair">
-				<div id="spot-diff-image" class="spot-image" aria-label="問題箇所を探す画像"><img src="images/03.jpg" alt="問題のある場所を探す風景"><span class="spot-image-label">問題箇所をさがして</span><span class="diff-edit diff-window" aria-hidden="true"></span><span class="diff-edit diff-flame" aria-hidden="true"></span><span class="diff-edit diff-skull" aria-hidden="true"></span></div>
-			</div>
-			<div class="spot-controls"><span id="spot-count" class="spot-count">問題箇所をタップして印をつけよう</span></div>
+			<div class="spot-controls"><span id="spot-count" class="spot-count">背景をクリックして問題箇所に印をつけよう</span></div>
 			<div class="spot-decision-row"><button id="spot-clear" class="spot-clear" type="button">クリア</button><button id="spot-confirm" class="spot-confirm" type="button" disabled>決定</button></div>
 		</section>
 	</main>
@@ -533,6 +535,7 @@
 			{ text: '自転車は歩道ではなく車道を走るのが原則になるのは、何歳からですか？', left: '13歳', right: '16歳', correct: 'left', explanation: '13歳以上になると、自転車は車道を走ることが原則になります。ただし、「自転車通行可」の標識がある場合などは歩道を走ることができます。ルールを正しく知り、安全に自転車を利用しましょう。' }
 		];
 		const timerLimit = 20;
+		const spotSelectionLimit = 10;
 		const differenceTargets = [
 			{ id: 'window', x: .805, y: .29 },
 			{ id: 'flame', x: .70, y: .605 },
@@ -547,7 +550,7 @@
 		const timerValue = document.querySelector('#timer-value');
 		const timerFill = document.querySelector('#timer-fill');
 		const spotStage = document.querySelector('#spot-stage');
-		const spotImage = document.querySelector('#spot-diff-image');
+		const spotImage = document.querySelector('#spot-background-image');
 		const spotCount = document.querySelector('#spot-count');
 		const spotClear = document.querySelector('#spot-clear');
 		const spotConfirm = document.querySelector('#spot-confirm');
@@ -823,6 +826,8 @@
 
 		function selectSpot(event) {
 			if (phase !== 'spot' || judged) return;
+			if (event.target.closest('.question-card, .spot-controls, .spot-decision-row')) return;
+			if (spotSelections.length >= spotSelectionLimit) return;
 			const bounds = spotImage.getBoundingClientRect();
 			const x = (event.clientX - bounds.left) / bounds.width;
 			const y = (event.clientY - bounds.top) / bounds.height;
@@ -836,14 +841,16 @@
 			marker.style.left = `${x * 100}%`;
 			marker.style.top = `${y * 100}%`;
 			spotImage.append(marker);
-			spotCount.textContent = `${spotSelections.length}箇所に印をつけました`;
+			spotCount.textContent = spotSelections.length >= spotSelectionLimit
+				? `${spotSelectionLimit}回のクリック上限に達しました`
+				: `${spotSelections.length}箇所に印をつけました`;
 			spotConfirm.disabled = false;
 		}
 
 		function clearSpots() {
 			spotSelections = [];
 			spotImage.querySelectorAll('.spot-marker').forEach((marker) => marker.remove());
-			spotCount.textContent = '問題箇所をタップして印をつけよう';
+			spotCount.textContent = '背景をクリックして問題箇所に印をつけよう';
 			spotConfirm.disabled = true;
 		}
 
@@ -924,7 +931,7 @@
 		});
 		answerSubmit.addEventListener('click', submitAnswers);
 		continueButton.addEventListener('click', continueAfterAnswer);
-		spotImage.addEventListener('click', selectSpot);
+		document.addEventListener('click', selectSpot);
 		spotClear.addEventListener('click', clearSpots);
 		spotConfirm.addEventListener('click', confirmSpots);
 		showResultsButton.addEventListener('click', showFinalResults);
