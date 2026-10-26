@@ -419,17 +419,19 @@
 	</style>
 </head>
 	<body>
+	<!-- Stage 3 is temporarily disabled.
 	<div id="spot-background" aria-hidden="true">
 		<div id="spot-background-image">
 			<img src="images/03.jpg" alt="">
 			<span class="diff-edit diff-window"></span><span class="diff-edit diff-flame"></span><span class="diff-edit diff-skull"></span>
 		</div>
 	</div>
+	-->
 	<main>
 		<div class="progress"><span id="question-number">STAGE 1  第1問 / 11問</span><span id="timer-box" class="timer-box"><span id="timer-value">20秒</span><span class="timer-track"><span id="timer-fill" class="timer-fill"></span></span></span></div>
 		<section class="rank-panel" aria-label="親子の称号進捗">
 			<div class="rank-line"><span class="rank-label">親子の称号</span><span id="rank-name" class="rank-name">ひよっこ</span></div>
-			<div class="rank-track" role="progressbar" aria-label="スコア進捗" aria-valuemin="0" aria-valuemax="54" aria-valuenow="0"><div id="rank-fill" class="rank-fill"></div></div>
+			<div class="rank-track" role="progressbar" aria-label="スコア進捗" aria-valuemin="0" aria-valuemax="48" aria-valuenow="0"><div id="rank-fill" class="rank-fill"></div></div>
 			<span id="rank-next" class="rank-next">次の称号まであと2点</span>
 		</section>
 		<section class="question-card"><p id="question" class="question"></p></section>
@@ -453,17 +455,19 @@
 		<div class="answer-controls"><button id="answer-submit" class="decision-button" type="button" disabled>決定</button></div>
 
 		<footer>決定後、正解と解説を確認して次へ進みます</footer>
+		<!-- Stage 3 is temporarily disabled.
 		<section id="spot-stage" class="spot-stage" aria-label="地獄の間違い探し">
 			<div class="spot-controls"><span id="spot-count" class="spot-count">背景をクリックして問題箇所に印をつけよう</span></div>
 			<div class="spot-decision-row"><button id="spot-clear" class="spot-clear" type="button">クリア</button><button id="spot-confirm" class="spot-confirm" type="button" disabled>決定</button></div>
 		</section>
+		-->
 	</main>
 	<section id="final-result" aria-labelledby="final-result-title" aria-modal="true" role="dialog">
-		<p class="final-heading">QUIZ COMPLETE</p>
-		<h1 id="final-result-title" class="final-title">結果発表</h1>
+		<p class="final-heading">QUIZ CLEAR</p>
+		<h1 id="final-result-title" class="final-title">クリア！</h1>
 		<p id="final-score" class="final-score">最終スコア 0点</p>
 		<p id="final-rank" class="final-summary">親子の称号: ひよっこ</p>
-		<p class="stage-score-note">シンクロボーナスは親子に1.5点ずつ配分（棒は全ステージ共通目盛り）</p>
+		<p class="stage-score-note">シンクロボーナスは親子に1.5点ずつ配分（棒は共通目盛り）</p>
 		<div class="stage-score-chart" aria-label="ステージごとの親子ポイント比較">
 			<div class="stage-score-row">
 				<strong class="stage-score-name">第1ステージ</strong>
@@ -479,6 +483,7 @@
 					<div class="stage-score-lane child"><span class="stage-score-player">子</span><span class="stage-score-track"><span id="relaxed-child-fill" class="stage-score-fill"></span></span><span id="relaxed-child-value" class="stage-score-value">0点</span></div>
 				</div>
 			</div>
+			<!-- Stage 3 score is temporarily disabled.
 			<div class="stage-score-row">
 				<strong class="stage-score-name">最終ステージ</strong>
 				<div class="stage-score-lanes">
@@ -486,6 +491,7 @@
 					<div class="stage-score-lane child"><span class="stage-score-player">子</span><span class="stage-score-track"><span id="spot-child-fill" class="stage-score-fill"></span></span><span id="spot-child-value" class="stage-score-value">0点</span></div>
 				</div>
 			</div>
+			-->
 		</div>
 		<div class="final-accuracy" aria-label="親子それぞれの正答率">
 			<div class="accuracy-row"><span class="accuracy-person">親</span><span class="accuracy-track"><span id="parent-accuracy-fill" class="accuracy-fill"></span></span><span id="parent-accuracy-value" class="accuracy-value">0 / 16問・0%</span></div>
@@ -494,6 +500,7 @@
 		</div>
 		<button id="restart-button" class="restart-button" type="button">スタート画面に戻る</button>
 	</section>
+	<!-- Stage 3 is temporarily disabled.
 	<section id="spot-feedback" class="spot-feedback" aria-labelledby="spot-feedback-count" aria-modal="true" role="dialog">
 		<p class="spot-feedback-title">FINAL STAGE / ANSWER CHECK</p>
 		<h2 id="spot-feedback-count" class="spot-feedback-count"></h2>
@@ -502,6 +509,7 @@
 		<p class="feedback-legend">緑: 発見　赤: 見逃し</p>
 		<button id="show-results-button" class="show-results-button" type="button">結果発表へ</button>
 	</section>
+	-->
 	<section id="answer-screen" class="answer-screen" aria-labelledby="answer-outcome" aria-modal="true" role="dialog">
 		<div id="answer-card" class="answer-card">
 			<p id="answer-kicker" class="answer-kicker">第1ステージ・第1問</p>
@@ -535,12 +543,6 @@
 			{ text: '自転車は歩道ではなく車道を走るのが原則になるのは、何歳からですか？', left: '13歳', right: '16歳', correct: 'left', explanation: '13歳以上になると、自転車は車道を走ることが原則になります。ただし、「自転車通行可」の標識がある場合などは歩道を走ることができます。ルールを正しく知り、安全に自転車を利用しましょう。' }
 		];
 		const timerLimit = 20;
-		const spotSelectionLimit = 10;
-		const differenceTargets = [
-			{ id: 'window', x: .805, y: .29 },
-			{ id: 'flame', x: .70, y: .605 },
-			{ id: 'skull', x: .905, y: .805 }
-		];
 		const surface = document.querySelector('#touch-surface');
 		const status = document.querySelector('#status');
 		const statusText = document.querySelector('#status-text');
@@ -549,11 +551,6 @@
 		const timerBox = document.querySelector('#timer-box');
 		const timerValue = document.querySelector('#timer-value');
 		const timerFill = document.querySelector('#timer-fill');
-		const spotStage = document.querySelector('#spot-stage');
-		const spotImage = document.querySelector('#spot-background-image');
-		const spotCount = document.querySelector('#spot-count');
-		const spotClear = document.querySelector('#spot-clear');
-		const spotConfirm = document.querySelector('#spot-confirm');
 		const main = document.querySelector('main');
 		const rankName = document.querySelector('#rank-name');
 		const rankFill = document.querySelector('#rank-fill');
@@ -562,11 +559,6 @@
 		const finalResultTitle = document.querySelector('#final-result-title');
 		const finalScore = document.querySelector('#final-score');
 		const finalRank = document.querySelector('#final-rank');
-		const spotFeedback = document.querySelector('#spot-feedback');
-		const spotFeedbackCount = document.querySelector('#spot-feedback-count');
-		const spotFeedbackPoints = document.querySelector('#spot-feedback-points');
-		const feedbackMarkers = document.querySelector('#feedback-markers');
-		const showResultsButton = document.querySelector('#show-results-button');
 		const parentAccuracyFill = document.querySelector('#parent-accuracy-fill');
 		const childAccuracyFill = document.querySelector('#child-accuracy-fill');
 		const combinedAccuracyFill = document.querySelector('#combined-accuracy-fill');
@@ -593,8 +585,7 @@
 		};
 		const stagePoints = {
 			timed: { parent: 0, child: 0 },
-			relaxed: { parent: 0, child: 0 },
-			spot: { parent: 0, child: 0 }
+			relaxed: { parent: 0, child: 0 }
 		};
 		let phase = 'timed';
 		let questionIndex = 0;
@@ -603,17 +594,16 @@
 		let timerRemaining = timerLimit;
 		let timerId = null;
 		let nextQuestionId = null;
-		let spotSelections = [];
 		let draggedPin = null;
 
 		function updateWorld() {
-			const backgroundClass = phase === 'relaxed' ? 'stage-forest' : phase === 'spot' ? 'stage-meadow' : 'stage-swamp';
+			const backgroundClass = phase === 'relaxed' ? 'stage-forest' : 'stage-swamp';
 			document.body.className = `phase-${phase} ${backgroundClass}`;
 			main.classList.toggle('phase-timed', phase === 'timed');
 		}
 
 		function updateRank() {
-			const maxScore = (timedQuestions.length + relaxedQuestions.length) * 3 + differenceTargets.length * 2;
+			const maxScore = (timedQuestions.length + relaxedQuestions.length) * 3;
 			const ranks = ['ひよっこ', 'かけだし', '一人前', '上級', '達人', '名人', '極', '神'].map((name, index) => ({ min: Math.ceil(maxScore * index / 7), name }));
 			const currentRankIndex = [...ranks].reverse().findIndex((rank) => score >= rank.min);
 			const currentRank = ranks[ranks.length - 1 - currentRankIndex];
@@ -639,8 +629,6 @@
 			clearTimers();
 			const questions = currentQuestions();
 			const current = questions[questionIndex];
-			main.classList.remove('phase-spot');
-			spotStage.classList.remove('is-visible');
 			answerScreen.classList.remove('is-visible');
 			timerBox.hidden = phase !== 'timed';
 			questionNumber.textContent = `${phase === 'timed' ? 'STAGE 1' : 'STAGE 2'}  第${questionIndex + 1}問 / ${questions.length}問`;
@@ -710,7 +698,7 @@
 		}
 
 		function startPinDrag(event) {
-			if (phase === 'spot' || judged) return;
+			if (judged) return;
 			event.preventDefault();
 			draggedPin = event.currentTarget;
 			draggedPin.classList.add('is-dragging');
@@ -729,7 +717,7 @@
 		function endPinDrag(event) {
 			if (draggedPin !== event.currentTarget) return;
 			const destination = document.elementFromPoint(event.clientX, event.clientY)?.closest('.answer');
-			if (destination && phase !== 'spot' && !judged) {
+			if (destination && !judged) {
 				playerChoices[draggedPin.dataset.player] = destination.dataset.choice;
 			}
 			draggedPin.classList.remove('is-dragging');
@@ -778,7 +766,7 @@
 			answerPoints.textContent = timedOut ? '0点' : `+${points}点`;
 			answerCorrectText.textContent = `正解: ${question[correctChoice]}`;
 			answerExplanation.textContent = timedOut ? `時間内に回答できなかったため0点です。${question.explanation}` : question.explanation;
-			continueButton.textContent = questionIndex + 1 < currentQuestions().length ? '次の問題へ' : phase === 'timed' ? '第2ステージへ' : '最終ステージへ';
+			continueButton.textContent = questionIndex + 1 < currentQuestions().length ? '次の問題へ' : phase === 'timed' ? '第2ステージへ' : 'クリア画面へ';
 			pinInstructions.textContent = timedOut ? '時間切れ' : '回答を判定しました';
 			statusText.textContent = timedOut ? '時間切れ' : bonus ? 'シンクロボーナス' : correctCount > 0 ? '正解' : '不正解';
 			answerScreen.classList.add('is-visible');
@@ -802,80 +790,17 @@
 				setQuestion();
 				return;
 			}
-			beginSpotStage();
-		}
-
-		function beginSpotStage() {
-			clearTimers();
-			phase = 'spot';
-			judged = false;
-			updateWorld();
-			main.classList.add('phase-spot');
-			spotStage.classList.add('is-visible');
-			spotStage.classList.remove('is-complete');
-			timerBox.hidden = true;
-			questionNumber.textContent = 'FINAL STAGE  問題箇所を探そう';
-			questionText.textContent = '画像の中から問題がある場所を選んでください';
-			statusText.textContent = '問題箇所を複数選んで決定してください';
-			spotSelections = [];
-			spotImage.querySelectorAll('.spot-marker').forEach((marker) => marker.remove());
-			spotCount.textContent = '問題箇所をタップして印をつけよう';
-			spotConfirm.disabled = true;
-			spotClear.disabled = false;
-		}
-
-		function selectSpot(event) {
-			if (phase !== 'spot' || judged) return;
-			if (event.target.closest('.question-card, .spot-controls, .spot-decision-row')) return;
-			if (spotSelections.length >= spotSelectionLimit) return;
-			const bounds = spotImage.getBoundingClientRect();
-			const x = (event.clientX - bounds.left) / bounds.width;
-			const y = (event.clientY - bounds.top) / bounds.height;
-			if (spotSelections.some((spot) => Math.hypot((spot.x - x) * bounds.width, (spot.y - y) * bounds.height) < 24)) return;
-			const tolerance = Math.max(22, bounds.width * .075);
-			const target = differenceTargets.find((item) => Math.hypot((item.x - x) * bounds.width, (item.y - y) * bounds.height) <= tolerance);
-			spotSelections.push({ x, y, targetId: target?.id ?? null });
-			const marker = document.createElement('span');
-			marker.className = 'spot-marker';
-			marker.textContent = spotSelections.length;
-			marker.style.left = `${x * 100}%`;
-			marker.style.top = `${y * 100}%`;
-			spotImage.append(marker);
-			spotCount.textContent = spotSelections.length >= spotSelectionLimit
-				? `${spotSelectionLimit}回のクリック上限に達しました`
-				: `${spotSelections.length}箇所に印をつけました`;
-			spotConfirm.disabled = false;
-		}
-
-		function clearSpots() {
-			spotSelections = [];
-			spotImage.querySelectorAll('.spot-marker').forEach((marker) => marker.remove());
-			spotCount.textContent = '背景をクリックして問題箇所に印をつけよう';
-			spotConfirm.disabled = true;
-		}
-
-		function confirmSpots() {
-			if (phase !== 'spot' || judged) return;
-			judged = true;
-			const found = new Set(spotSelections.map((spot) => spot.targetId).filter(Boolean)).size;
-			score += found * 2;
-			stagePoints.spot.parent += found;
-			stagePoints.spot.child += found;
-			updateRank();
-			spotConfirm.disabled = true;
-			spotClear.disabled = true;
-			spotCount.textContent = `見つけた問題箇所: ${found} / ${differenceTargets.length}`;
-			finalResultTitle.textContent = '結果発表';
+			finalResultTitle.textContent = 'クリア！';
 			finalScore.textContent = `最終スコア ${score}点`;
 			finalRank.textContent = `親子の称号: ${rankName.textContent}`;
 			updateStageScoreGraph();
 			updateAccuracyGraph();
-			showSpotFeedback(found);
+			showFinalResults();
 		}
 
 		function updateStageScoreGraph() {
 			const commonScale = timedQuestions.length * 1.5;
-			for (const key of ['timed', 'relaxed', 'spot']) {
+			for (const key of ['timed', 'relaxed']) {
 				for (const player of ['parent', 'child']) {
 					const points = stagePoints[key][player];
 					const formatted = Number.isInteger(points) ? String(points) : points.toFixed(1);
@@ -885,24 +810,7 @@
 			}
 		}
 
-		function showSpotFeedback(found) {
-			spotFeedbackCount.textContent = `${differenceTargets.length}箇所中 ${found}箇所を発見！`;
-			spotFeedbackPoints.textContent = `親 +${found}点 / 子 +${found}点（合計 +${found * 2}点）`;
-			feedbackMarkers.replaceChildren();
-			const foundTargets = new Set(spotSelections.map((spot) => spot.targetId).filter(Boolean));
-			differenceTargets.forEach((target, index) => {
-				const marker = document.createElement('span');
-				marker.className = `feedback-marker${foundTargets.has(target.id) ? ' found' : ''}`;
-				marker.textContent = index + 1;
-				marker.style.left = `${target.x * 100}%`;
-				marker.style.top = `${target.y * 100}%`;
-				feedbackMarkers.append(marker);
-			});
-			spotFeedback.classList.add('is-visible');
-		}
-
 		function showFinalResults() {
-			spotFeedback.classList.remove('is-visible');
 			document.body.className = 'show-final-results';
 			document.querySelector('#final-result').classList.add('is-visible');
 			restartButton.classList.add('is-visible');
@@ -931,16 +839,12 @@
 		});
 		answerSubmit.addEventListener('click', submitAnswers);
 		continueButton.addEventListener('click', continueAfterAnswer);
-		document.addEventListener('click', selectSpot);
-		spotClear.addEventListener('click', clearSpots);
-		spotConfirm.addEventListener('click', confirmSpots);
-		showResultsButton.addEventListener('click', showFinalResults);
 		restartButton.addEventListener('click', () => {
 			window.location.href = 'start.html';
 		});
 		const launchParams = new URLSearchParams(window.location.search);
 		const devStage = launchParams.get('stage');
-		if (launchParams.get('dev') === '1' && ['timed', 'relaxed', 'spot'].includes(devStage)) {
+		if (launchParams.get('dev') === '1' && ['timed', 'relaxed'].includes(devStage)) {
 			phase = devStage;
 			if (phase === 'timed' || phase === 'relaxed') {
 				const questionTotal = currentQuestions().length;
@@ -949,8 +853,7 @@
 			}
 			updateWorld();
 			updateRank();
-			if (phase === 'spot') beginSpotStage();
-			else setQuestion();
+			setQuestion();
 		} else {
 			updateWorld();
 			updateRank();
