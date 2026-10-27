@@ -62,24 +62,6 @@
 		body.phase-spot #spot-background { display: block; }
 		#spot-background-image { position: absolute; left: 50%; top: 50%; width: max(100vw, 150svh); aspect-ratio: 3 / 2; transform: translate(-50%, -50%); }
 		#spot-background-image img { display: block; width: 100%; height: 100%; }
-		.ride-scene { position: fixed; right: 5vw; bottom: 12vh; z-index: 0; width: 144px; height: 94px; opacity: .72; pointer-events: none; animation: ride-bob 1.2s ease-in-out infinite; }
-		.ride-scene .wheel { position: absolute; bottom: 4px; width: 42px; height: 42px; border: 3px solid rgba(226, 232, 240, .82); border-radius: 50%; }
-		.ride-scene .wheel::before, .ride-scene .wheel::after { content: ''; position: absolute; left: 50%; top: 50%; width: 100%; height: 1px; background: rgba(226, 232, 240, .35); transform: translate(-50%, -50%) rotate(45deg); }
-		.ride-scene .wheel::after { transform: translate(-50%, -50%) rotate(-45deg); }
-		.ride-scene .rear { left: 8px; }
-		.ride-scene .front { right: 8px; }
-		.ride-scene .frame { position: absolute; left: 29px; bottom: 24px; width: 62px; height: 32px; border-bottom: 3px solid var(--warm); border-left: 3px solid var(--warm); transform: skew(-14deg) rotate(-8deg); }
-		.ride-scene .frame::before { content: ''; position: absolute; left: 27px; top: -1px; width: 34px; height: 2px; background: var(--warm); transform: rotate(52deg); transform-origin: left; }
-		.ride-scene .handlebar { position: absolute; right: 24px; bottom: 56px; width: 15px; height: 13px; border-top: 3px solid var(--warm); border-right: 3px solid var(--warm); transform: rotate(12deg); }
-		.ride-scene .person { position: absolute; left: 52px; top: 8px; width: 52px; height: 62px; }
-		.ride-scene .head { position: absolute; left: 18px; top: 0; width: 14px; height: 14px; border: 2px solid var(--accent); border-radius: 50%; background: #f8cfae; }
-		.ride-scene .body { position: absolute; left: 20px; top: 14px; width: 9px; height: 27px; border-radius: 8px; background: var(--accent); transform: rotate(28deg); }
-		.ride-scene .arm { position: absolute; left: 24px; top: 18px; width: 29px; height: 3px; border-radius: 3px; background: #f8cfae; transform: rotate(22deg); transform-origin: left; }
-		.ride-scene .leg { position: absolute; left: 25px; top: 37px; width: 28px; height: 3px; border-radius: 3px; background: var(--warm); transform: rotate(42deg); transform-origin: left; }
-		.ride-scene .leg.second { left: 25px; top: 39px; transform: rotate(-19deg); }
-		@keyframes ride-bob { 50% { transform: translateY(-3px) rotate(-1deg); } }
-		.ride-scene { display: none; }
-
 		main {
 			display: flex;
 			flex-direction: column;
@@ -115,12 +97,9 @@
 			background: var(--panel);
 			transition: border-color .2s, background .2s;
 		}
-		.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #64748b; }
 		.status strong { font-size: 16px; }
 		.status.is-ready { border-color: rgba(94, 234, 212, .55); background: rgba(13, 148, 136, .16); }
-		.status.is-ready .status-dot { background: var(--accent); box-shadow: 0 0 16px var(--accent); }
 		.status.is-two { border-color: rgba(251, 191, 36, .75); background: rgba(180, 83, 9, .2); }
-		.status.is-two .status-dot { background: var(--warm); box-shadow: 0 0 16px var(--warm); }
 		.pin-instructions { color: var(--muted); font-size: 12px; }
 		.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 		.pin-tray { display: flex; gap: 10px; margin: 0 auto; }
@@ -143,7 +122,6 @@
 		.timer-box[hidden] { display: none; }
 		.timer-fill { width: 100%; height: 100%; border-radius: inherit; background: var(--warm); transition: width .25s linear, background .25s; }
 		.timer-fill.low { background: #fb7185; }
-		.score { color: var(--warm); font-size: 15px; font-weight: 800; }
 		.stage-name { margin-left: 8px; color: var(--accent); font-weight: 700; }
 		.rank-panel { margin: 0 0 8px; padding: 6px 12px; border: 1px solid rgba(251, 191, 36, .42); border-radius: 12px; background: rgba(15, 23, 42, .7); }
 		.rank-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
@@ -252,8 +230,7 @@
 		.stage-score-fill { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5eead4, #14b8a6); transition: width .5s ease; }
 		.stage-score-lane.child .stage-score-fill { background: linear-gradient(90deg, #fde68a, #f59e0b); }
 		.stage-score-value { color: var(--ink); font-size: 9px; font-weight: 800; text-align: right; }
-		.final-accuracy { width: min(100%, 640px); display: grid; gap: 10px; margin: 4px 0; }
-		.final-accuracy { display: grid; gap: 5px; margin: 3px 0 2px; }
+		.final-accuracy { width: min(100%, 640px); display: grid; gap: 5px; margin: 3px 0 2px; }
 		.accuracy-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) 72px; align-items: center; gap: 9px; }
 		.accuracy-person { font-size: 12px; font-weight: 900; }
 		.accuracy-person.child { color: var(--warm); }
@@ -283,27 +260,16 @@
 		main.phase-spot .question { font-size: 15px; }
 		body.show-final-results main { display: none; }
 		#final-result .restart-button { display: block; width: min(100%, 320px); min-height: 42px; margin-top: 4px; }
-		.metrics { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
-		.metric { padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; background: rgba(30, 41, 59, .58); }
-		.metric-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 11px; }
-		.metric-value { display: block; font-variant-numeric: tabular-nums; font-size: 16px; font-weight: 700; }
-
 		footer { padding-top: 14px; color: #7f8ba1; font-size: 11px; text-align: center; }
-		.handlebar-view { position: fixed; left: 50%; bottom: -24px; z-index: 0; width: 190px; height: 72px; border: 5px solid rgba(226, 232, 240, .25); border-bottom: 0; border-radius: 100px 100px 0 0; transform: translateX(-50%); pointer-events: none; }
-		.handlebar-view::before, .handlebar-view::after { content: ''; position: absolute; top: 7px; width: 42px; height: 17px; border: 5px solid rgba(226, 232, 240, .3); border-bottom: 0; border-radius: 18px 18px 0 0; }
-		.handlebar-view::before { left: -9px; transform: rotate(-16deg); }
-		.handlebar-view::after { right: -9px; transform: rotate(16deg); }
 		@keyframes appear { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
 
 		@media (orientation: landscape) and (max-height: 500px) {
-			.handlebar-view { display: none; }
 			main { width: min(100%, 900px); padding: max(8px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-bottom)); }
 			header { padding: 0 2px 5px; }
 			.eyebrow { margin-bottom: 2px; font-size: 9px; }
 			h1 { font-size: 22px; }
 			.intro { display: none; }
 			.progress { margin-bottom: 5px; font-size: 10px; }
-			.score { font-size: 13px; }
 			.rank-panel { margin-bottom: 5px; padding: 5px 9px; }
 			.rank-name { font-size: 14px; }
 			.rank-track { height: 7px; margin-top: 4px; }
@@ -311,7 +277,6 @@
 			.question-card { padding: 8px 12px; }
 			.question { font-size: 17px; line-height: 1.25; }
 			.status { min-height: 30px; padding: 3px 8px; }
-			.status-dot { width: 8px; height: 8px; }
 			.status strong { font-size: 13px; }
 			#touch-surface { min-height: 112px; margin: 4px 0 2px; border-radius: 16px; }
 			.answers { inset: 8px; gap: 10px; }
@@ -498,7 +463,7 @@
 			<div class="accuracy-row child"><span class="accuracy-person child">子</span><span class="accuracy-track"><span id="child-accuracy-fill" class="accuracy-fill"></span></span><span id="child-accuracy-value" class="accuracy-value">0 / 16問・0%</span></div>
 			<div class="accuracy-row combined"><span class="accuracy-person">合算</span><span class="accuracy-track"><span id="combined-accuracy-fill" class="accuracy-fill"></span></span><span id="combined-accuracy-value" class="accuracy-value">0 / 32回答・0%</span></div>
 		</div>
-		<button id="restart-button" class="restart-button" type="button">スタート画面に戻る</button>
+		<button id="restart-button" class="restart-button" type="button">アンケートに答える</button>
 	</section>
 	<!-- Stage 3 is temporarily disabled.
 	<section id="spot-feedback" class="spot-feedback" aria-labelledby="spot-feedback-count" aria-modal="true" role="dialog">
@@ -640,8 +605,10 @@
 			playerChoices.child = null;
 			answerSubmit.disabled = true;
 			judged = false;
-			answerButtons.forEach((button) => button.classList.remove('selected', 'correct', 'wrong'));
-			answerButtons.forEach((button) => button.querySelector('.placed-pins').replaceChildren());
+			answerButtons.forEach((button) => {
+				button.classList.remove('selected', 'correct', 'wrong');
+				button.querySelector('.placed-pins').replaceChildren();
+			});
 			pinButtons.forEach((button) => {
 				button.classList.remove('is-dragging');
 				button.style.left = '';
@@ -840,25 +807,19 @@
 		answerSubmit.addEventListener('click', submitAnswers);
 		continueButton.addEventListener('click', continueAfterAnswer);
 		restartButton.addEventListener('click', () => {
-			window.location.href = 'start.html';
+			window.location.href = 'https://yh719.github.io/vscode/dev.html';
 		});
 		const launchParams = new URLSearchParams(window.location.search);
 		const devStage = launchParams.get('stage');
 		if (launchParams.get('dev') === '1' && ['timed', 'relaxed'].includes(devStage)) {
 			phase = devStage;
-			if (phase === 'timed' || phase === 'relaxed') {
-				const questionTotal = currentQuestions().length;
-				const requestedQuestion = Number.parseInt(launchParams.get('q') || '1', 10);
-				questionIndex = Math.max(0, Math.min(questionTotal - 1, requestedQuestion - 1));
-			}
-			updateWorld();
-			updateRank();
-			setQuestion();
-		} else {
-			updateWorld();
-			updateRank();
-			setQuestion();
+			const questionTotal = currentQuestions().length;
+			const requestedQuestion = Number.parseInt(launchParams.get('q') || '1', 10);
+			questionIndex = Math.max(0, Math.min(questionTotal - 1, requestedQuestion - 1));
 		}
+		updateWorld();
+		updateRank();
+		setQuestion();
 	</script>
 </body>
 </html>
