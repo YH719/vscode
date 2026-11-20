@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#111827">
+  <title>親子で自転車ルールクイズ｜ステージ2</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f8fafc;
+      --muted: #a7b0c2;
+      --accent: #5eead4;
+      --warm: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100svh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background: #263746;
+      user-select: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    #spot-background {
+      position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: auto !important;
+    }
+    #spot-background-image {
+      position: absolute; inset: 0; pointer-events: auto !important;
+      cursor: crosshair;
+    }
+    #spot-background-image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: saturate(1.05) contrast(1.1); pointer-events: none; }
+    main {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      width: min(100%, 760px); min-height: 100svh; margin: auto;
+      padding: max(18px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+      gap: 14px;
+      pointer-events: none;
+    }
+    .spot-stage, .spot-controls, .spot-clear, .spot-confirm {
+      pointer-events: auto;
+    }
+    .spot-stage {
+      display: flex; flex-direction: column; gap: 10px; width: min(100%, 680px); margin: 0 auto;
+      padding: 12px 10px 8px; border-radius: 12px; background: rgba(15, 23, 42, .76);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+      transform: translateY(-2px);
+    }
+    .spot-controls { position: relative; display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 8px 10px; border-radius: 10px; background: rgba(2, 6, 23, .76); }
+    .spot-count {
+      display: flex; flex: 1; align-items: center; justify-content: flex-start; gap: 1em; white-space: nowrap;
+    }
+    .question-number { color: var(--warm); font-size: clamp(16px, 3.5vw, 24px); font-weight: 900; line-height: 1.2; }
+    .spot-count-value { color: var(--muted); font-size: clamp(9px, 2.5vw, 14px); font-weight: 800; line-height: 1.2; }
+    .spot-clear, .spot-confirm { min-height: 38px; padding: 8px 16px; border: 0; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    .spot-clear { color: var(--ink); background: rgba(71, 85, 105, .9); }
+    .spot-decision-row { display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 54px; }
+    .spot-confirm { min-width: 150px; min-height: 42px; color: #042f2e; background: var(--accent); font-size: 15px; }
+    .spot-confirm:disabled { opacity: .45; }
+    .spot-marker { position: absolute; z-index: 3; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 3px solid #5eead4; border-radius: 50%; color: white; background: rgba(20, 184, 166, .58); font-size: 13px; font-weight: 900; line-height: 28px; text-align: center; box-shadow: 0 0 0 3px rgba(20,184,166,.25); pointer-events: none; }
+    .spot-feedback {
+      position: fixed; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; overflow-y: auto; padding: max(12px, env(safe-area-inset-top)) 18px max(12px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827;
+    }
+    .spot-feedback.is-visible { display: flex; animation: fade-in .25s ease-out both; }
+    .spot-feedback-title { margin: 0; color: var(--warm); font-size: 11px; font-weight: 900; letter-spacing: .1em; }
+    .spot-feedback-count { margin: 0; font-size: clamp(18px, 4vw, 25px); font-weight: 900; text-align: center; }
+    .spot-feedback-points { margin: 0; color: var(--accent); font-size: 13px; font-weight: 800; text-align: center; }
+    .spot-feedback-image { position: relative; width: min(100%, 640px, calc((100svh - 150px) * 1.5)); aspect-ratio: 3 / 2; overflow: hidden; border: 1px solid rgba(255,255,255,.3); border-radius: 10px; background: #261319; }
+    .spot-feedback-image img { display: block; width: 100%; height: 100%; object-fit: fill; }
+    .feedback-marker { position: absolute; display: grid; place-items: center; width: 34px; height: 34px; border: 3px solid #fb7185; border-radius: 50%; color: #fff; background: rgba(190, 24, 93, .72); font-size: 13px; font-weight: 900; transform: translate(-50%, -50%); box-shadow: 0 0 0 4px rgba(251,113,133,.2), 0 0 20px rgba(251,113,133,.7); }
+    .feedback-marker.found { border-color: #5eead4; background: rgba(13,148,136,.82); box-shadow: 0 0 0 4px rgba(94,234,212,.2), 0 0 20px rgba(94,234,212,.65); }
+    .feedback-legend { margin: 0; color: var(--muted); font-size: 10px; }
+    .show-results-button { min-width: 190px; min-height: 40px; padding: 8px 18px; border: 0; border-radius: 10px; color: #042f2e; background: var(--accent); font: inherit; font-size: 14px; font-weight: 900; }
+    #final-result { position: fixed; inset: 0; z-index: 30; display: none; align-content: center; justify-items: center; gap: 10px; overflow-y: auto; padding: max(18px, env(safe-area-inset-top)) 22px max(18px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827; }
+    #final-result.is-visible { display: grid; animation: fade-in .3s ease-out both; }
+    .final-heading { margin: 0; color: var(--warm); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+    .final-title { margin: 0; font-size: clamp(28px, 6vw, 42px); font-weight: 900; text-align: center; }
+    .final-score { margin: 0; color: var(--accent); font-size: clamp(20px, 4vw, 28px); font-weight: 900; }
+    .final-summary { max-width: 620px; margin: 0; color: var(--muted); font-size: 12px; text-align: center; }
+    .restart-button { display: block; width: min(100%, 320px); min-height: 42px; margin-top: 4px; padding: 12px; border: 0; border-radius: 12px; color: #042f2e; background: var(--accent); font: inherit; font-weight: 800; }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @media (orientation: landscape) and (max-height: 500px) {
+      main { padding: max(8px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-bottom)); }
+      .spot-stage { width: min(100%, 560px); margin-top: 0; padding: 8px 8px 6px; transform: translateY(-1px); }
+      .spot-controls { padding: 4px 8px; }
+      .spot-count { font-size: 18px; }
+      .spot-clear { min-height: 32px; padding: 5px 10px; font-size: 11px; }
+      .spot-decision-row { min-height: 38px; }
+      .spot-confirm { min-width: 120px; min-height: 34px; padding: 5px 12px; font-size: 12px; }
+      .spot-marker { width: 28px; height: 28px; margin: -14px 0 0 -14px; font-size: 11px; line-height: 22px; }
+      .spot-feedback { gap: 4px; padding: 6px 16px; }
+      .spot-feedback-title { font-size: 8px; }
+      .spot-feedback-count { font-size: 17px; }
+      .spot-feedback-points { font-size: 10px; }
+      .spot-feedback-image { width: min(100%, 500px, calc((100svh - 112px) * 1.5)); }
+      .feedback-marker { width: 27px; height: 27px; font-size: 10px; }
+      .feedback-legend { font-size: 8px; }
+      .show-results-button { min-height: 32px; min-width: 160px; padding: 5px 12px; font-size: 11px; }
+      #final-result { gap: 5px; padding: 8px 20px; }
+      .final-heading { font-size: 8px; }
+      .final-title { font-size: 25px; }
+      .final-score { font-size: 18px; }
+      .final-summary { font-size: 9px; }
+      .restart-button { min-height: 34px; margin-top: 2px; padding: 5px 12px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="spot-background" aria-hidden="true">
+    <div id="spot-background-image">
+      <img id="question-image" src="images/02-01.png" alt="">
+    </div>
+  </div>
+
+  <main>
+    <section id="spot-stage" class="spot-stage" aria-label="ステージ2の問題">
+      <div class="spot-controls"><span class="spot-count"><span id="question-number" class="question-number"></span><span id="spot-count-value" class="spot-count-value"></span></span></div>
+      <div class="spot-decision-row"><button id="spot-clear" class="spot-clear" type="button">クリア</button><button id="spot-confirm" class="spot-confirm" type="button" disabled>決定</button></div>
+    </section>
+  </main>
+
+  <section id="spot-feedback" class="spot-feedback" aria-labelledby="spot-feedback-count" aria-modal="true" role="dialog">
+    <p class="spot-feedback-title">STAGE 2 / ANSWER CHECK</p>
+    <h2 id="spot-feedback-count" class="spot-feedback-count"></h2>
+    <p id="spot-feedback-points" class="spot-feedback-points"></p>
+    <div class="spot-feedback-image"><img id="feedback-image" src="images/02-01.png" alt="問題箇所と正解位置の風景"><div id="feedback-markers"></div></div>
+    <p class="feedback-legend">緑: 発見　赤: 見逃し</p>
+    <button id="show-results-button" class="show-results-button" type="button">次の問題へ</button>
+  </section>
+
+  <section id="final-result" aria-labelledby="final-result-title" aria-modal="true" role="dialog">
+    <p class="final-heading">QUIZ CLEAR</p>
+    <h1 id="final-result-title" class="final-title">ステージ2クリア！</h1>
+    <p id="final-score" class="final-score">スコア 0点</p>
+    <p id="final-rank" class="final-summary">違和感のある場所を見つけよう</p>
+    <button id="restart-button" class="restart-button" type="button">アンケートに答える</button>
+  </section>
+
+  <script>
+    const spotBackground = document.querySelector('#spot-background');
+    const spotBackgroundImage = document.querySelector('#spot-background-image');
+    const spotCount = document.querySelector('#spot-count-value');
+    const spotPrompt = '危険なところをタップしてしるしをつけよう';
+    const spotConfirm = document.querySelector('#spot-confirm');
+    const spotClear = document.querySelector('#spot-clear');
+    const spotFeedback = document.querySelector('#spot-feedback');
+    const showResultsButton = document.querySelector('#show-results-button');
+    const questionNumber = document.querySelector('#question-number');
+    const questionImage = document.querySelector('#question-image');
+    const feedbackImage = document.querySelector('#feedback-image');
+    const finalResult = document.querySelector('#final-result');
+    const finalScore = document.querySelector('#final-score');
+    const finalRank = document.querySelector('#final-rank');
+    const feedbackMarkers = document.querySelector('#feedback-markers');
+    const questions = [
+      { image: 'images/02-01.png', targets: [{ x: 78, y: 31 }, { x: 28, y: 36 }] },
+      { image: 'images/02-02.png', targets: [{ x: 39, y: 41 }] },
+      { image: 'images/02-03.png', targets: [{ x: 19, y: 43 }, { x: 48, y: 52 }, { x: 86, y: 29 }] }
+    ];
+    const maxScore = questions.reduce((total, question) => total + question.targets.length, 0);
+    let currentQuestionIndex = 0;
+    let spotMarks = [];
+    let totalScore = 0;
+
+    // object-fit の表示方式に合わせて、画像と表示枠の座標を対応させる。
+    function getImageLayout(image, container) {
+      const rect = container.getBoundingClientRect();
+      const ratio = getComputedStyle(image).objectFit === 'contain' ? Math.min : Math.max;
+      const scale = ratio(rect.width / image.naturalWidth, rect.height / image.naturalHeight);
+      const width = image.naturalWidth * scale;
+      const height = image.naturalHeight * scale;
+      const top = getComputedStyle(image).objectFit === 'cover' ? 0 : (rect.height - height) / 2;
+      return { rect, width, height, left: (rect.width - width) / 2, top };
+    }
+
+    function updateQuestion() {
+      const question = questions[currentQuestionIndex];
+      spotMarks = [];
+      spotBackgroundImage.querySelectorAll('.spot-marker').forEach((marker) => marker.remove());
+      questionImage.src = question.image;
+      feedbackImage.src = question.image;
+      questionNumber.textContent = `第${currentQuestionIndex + 1}問`;
+      spotCount.textContent = spotPrompt;
+      spotConfirm.disabled = true;
+      showResultsButton.textContent = currentQuestionIndex === questions.length - 1 ? '結果発表へ' : '次の問題へ';
+    }
+
+    function addSpotMarker(event) {
+      if (event.target.closest('.spot-marker')) return;
+      const question = questions[currentQuestionIndex];
+      if (spotMarks.length >= question.targets.length) return;
+      const layout = getImageLayout(questionImage, spotBackgroundImage);
+      const x = ((event.clientX - layout.rect.left - layout.left) / layout.width) * 100;
+      const y = ((event.clientY - layout.rect.top - layout.top) / layout.height) * 100;
+      if (x < 0 || x > 100 || y < 0 || y > 100) return;
+      const marker = document.createElement('span');
+      marker.className = 'spot-marker';
+      marker.style.left = `${(x * layout.width / 100 + layout.left) / layout.rect.width * 100}%`;
+      marker.style.top = `${(y * layout.height / 100 + layout.top) / layout.rect.height * 100}%`;
+      marker.textContent = String(spotMarks.length + 1);
+      spotBackgroundImage.appendChild(marker);
+      spotMarks.push({ x, y });
+      spotCount.textContent = `印をつけた数: ${spotMarks.length} / ${question.targets.length}`;
+      spotConfirm.disabled = spotMarks.length === 0;
+    }
+
+    function finalizeSpotStage() {
+      if (spotMarks.length === 0) return;
+      const question = questions[currentQuestionIndex];
+      // 縦横それぞれ正解位置から10%以内の印を正解として数える。
+      const foundCount = question.targets.filter((target) =>
+        spotMarks.some((mark) => Math.abs(mark.x - target.x) < 10 && Math.abs(mark.y - target.y) < 10)
+      ).length;
+      totalScore += foundCount;
+      spotFeedback.classList.add('is-visible');
+      document.querySelector('#spot-feedback-count').textContent = foundCount ? '正解！' : '見逃した場所があります';
+      document.querySelector('#spot-feedback-points').textContent = `第${currentQuestionIndex + 1}問: +${foundCount}点`;
+      feedbackMarkers.innerHTML = '';
+      // 正解位置をすべて表示し、発見済みの位置だけ緑色にする。
+      question.targets.forEach((target) => {
+        const marker = document.createElement('span');
+        const isFound = spotMarks.some((mark) => Math.abs(mark.x - target.x) < 10 && Math.abs(mark.y - target.y) < 10);
+        marker.className = `feedback-marker ${isFound ? 'found' : ''}`;
+        const layout = getImageLayout(feedbackImage, feedbackImage.parentElement);
+        marker.style.left = `${(target.x * layout.width / 100 + layout.left) / layout.rect.width * 100}%`;
+        marker.style.top = `${(target.y * layout.height / 100 + layout.top) / layout.rect.height * 100}%`;
+        marker.textContent = '●';
+        feedbackMarkers.appendChild(marker);
+      });
+    }
+
+    spotBackground.addEventListener('click', addSpotMarker);
+    spotConfirm.addEventListener('click', finalizeSpotStage);
+    spotClear.addEventListener('click', () => {
+      // 配置した印と回数表示を初期状態に戻す。
+      spotMarks = [];
+      spotBackgroundImage.querySelectorAll('.spot-marker').forEach((marker) => marker.remove());
+      spotCount.textContent = spotPrompt;
+      spotConfirm.disabled = true;
+    });
+    showResultsButton.addEventListener('click', () => {
+      spotFeedback.classList.remove('is-visible');
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex += 1;
+        updateQuestion();
+        return;
+      }
+      finalScore.textContent = `合計スコア ${totalScore} / ${maxScore}点`;
+      finalRank.textContent = `${maxScore}か所中 ${totalScore}か所見つけました！`;
+      finalResult.classList.add('is-visible');
+    });
+    document.querySelector('#restart-button').addEventListener('click', () => {
+      window.location.href = 'https://forms.cloud.microsoft/r/PjYv8RwcjT';
+    });
+    updateQuestion();
+  </script>
+</body>
+</html>
