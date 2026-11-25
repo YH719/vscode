@@ -55,7 +55,6 @@
 		body.stage-starlight::before { background: url("images/04_雲の上.jpg") center / cover no-repeat; }
 		body.stage-heaven { background: #b8dff2; }
 		body.stage-heaven::before { background: url("images/05_天国.jpg") center / cover no-repeat; }
-<<<<<<< HEAD
 		body.phase-spot::before { background: none; }
 		body.show-final-results { background: #111827; }
 		body.show-final-results::before { background: none; opacity: 0; }
@@ -63,12 +62,6 @@
 		body.phase-spot #spot-background { display: block; }
 		#spot-background-image { position: absolute; inset: 0; cursor: crosshair; }
 		#spot-background-image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: saturate(1.05) contrast(1.1); pointer-events: none; }
-=======
-		body.phase-timed.stage-swamp::before { background-image: url("images/01.jpg"); }
-		body.phase-relaxed.stage-forest::before { background-image: url("images/02.jpg"); }
-		body.show-final-results { background: #111827; }
-		body.show-final-results::before { background: none; opacity: 0; }
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 		main {
 			display: flex;
 			flex-direction: column;
@@ -211,7 +204,6 @@
 		.restart-button.is-visible { display: block; }
 		.answer-screen { position: fixed; inset: 0; z-index: 20; display: none; align-items: center; justify-content: center; overflow: hidden; padding: max(16px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)); background: rgba(3, 8, 20, .72); backdrop-filter: blur(8px); }
 		.answer-screen.is-visible { display: flex; animation: result-fade-in .24s ease-out both; }
-<<<<<<< HEAD
 		.combo-popup { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; visibility: hidden; opacity: 0; pointer-events: none; }
 		.combo-popup.is-visible { visibility: visible; animation: combo-popup-show 1.8s ease both; }
 		.combo-popup-card { width: min(100%, 560px); padding: 24px 20px; border: 3px solid #fde68a; border-radius: 24px; color: #fff; background: linear-gradient(145deg, rgba(124, 45, 18, .97), rgba(88, 28, 135, .97)); box-shadow: 0 0 0 8px rgba(251, 191, 36, .2), 0 18px 70px rgba(0, 0, 0, .7); text-align: center; }
@@ -230,9 +222,6 @@
 		.feedback-legend { margin: 0; color: var(--muted); font-size: 10px; }
 		.show-results-button { min-width: 190px; min-height: 40px; padding: 8px 18px; border: 0; border-radius: 10px; color: #042f2e; background: var(--accent); font: inherit; font-size: 14px; font-weight: 900; }
 		.answer-card { flex-shrink: 0; width: min(100%, 640px); padding: 22px 24px; border: 1px solid rgba(94, 234, 212, .5); border-radius: 16px; background: rgba(15, 23, 42, .96); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
-=======
-		.answer-card { width: min(100%, 640px); max-height: 100%; overflow: auto; padding: 22px 24px; border: 1px solid rgba(94, 234, 212, .5); border-radius: 16px; background: rgba(15, 23, 42, .96); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 		.answer-card.is-correct { border-color: rgba(94, 234, 212, .8); }
 		.answer-card.is-wrong { border-color: rgba(251, 113, 133, .8); }
 		.answer-kicker { margin: 0 0 6px; color: var(--muted); font-size: 11px; font-weight: 800; }
@@ -246,7 +235,6 @@
 		.answer-explanation { margin: 0; color: #d1d9e6; font-size: 16px; line-height: 1.7; white-space: pre-line; }
 		.continue-button { display: block; width: 100%; min-height: 44px; margin-top: 18px; padding: 10px 16px; border: 0; border-radius: 10px; color: #042f2e; background: var(--accent); font: inherit; font-size: 15px; font-weight: 900; }
 		@keyframes result-fade-in { from { opacity: 0; } to { opacity: 1; } }
-<<<<<<< HEAD
 		@keyframes answer-celebrate { 0% { opacity: 0; transform: scale(.72); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
 		@keyframes combo-popup-show { 0% { visibility: visible; opacity: 0; transform: scale(.65) rotate(-4deg); } 12%, 78% { visibility: visible; opacity: 1; transform: scale(1) rotate(0); } 100% { visibility: hidden; opacity: 0; transform: scale(1.08); } }
 		@media (prefers-reduced-motion: reduce) { .combo-popup.is-visible { animation: none; visibility: visible; opacity: 1; transform: none; } }
@@ -255,10 +243,6 @@
 		#final-result { position: fixed; inset: 0; z-index: 30; display: none; align-items: center; justify-content: center; overflow: hidden; padding: max(18px, env(safe-area-inset-top)) 22px max(18px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827; }
 		#final-result.is-visible { display: flex; animation: result-fade-in .3s ease-out both; }
 		.final-result-content { display: grid; flex-shrink: 0; justify-items: center; gap: 10px; width: min(100%, 640px); }
-=======
-		#final-result { position: fixed; inset: 0; z-index: 30; display: none; align-content: center; justify-items: center; gap: 10px; overflow-y: auto; padding: max(18px, env(safe-area-inset-top)) 22px max(18px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827; }
-		#final-result.is-visible { display: grid; animation: result-fade-in .3s ease-out both; }
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 		.final-heading { margin: 0; color: var(--warm); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
 		.final-title { margin: 0; font-size: clamp(28px, 6vw, 42px); font-weight: 900; text-align: center; }
 		.stage-result { display: grid; justify-items: center; gap: 5px; width: min(100%, 640px); padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(30, 41, 59, .6); }
@@ -288,7 +272,6 @@
 		.accuracy-fill { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5eead4, #14b8a6); transition: width .6s ease; }
 		.accuracy-row.child .accuracy-fill { background: linear-gradient(90deg, #fde68a, #f59e0b); }
 		.accuracy-value { color: var(--ink); font-size: 12px; font-weight: 800; text-align: right; white-space: nowrap; }
-<<<<<<< HEAD
 		.diff-edit { position: absolute; z-index: 1; pointer-events: none; }
 		.diff-window { left: 78%; top: 25%; width: 5%; height: 8%; border: 2px solid #ffed9e; background: #ff5b19; box-shadow: 0 0 12px 5px rgba(255, 76, 10, .9); }
 		.diff-flame { left: 67%; top: 54%; width: 6%; height: 13%; border-radius: 55% 45% 55% 45%; background: radial-gradient(ellipse at 50% 72%, #fff6a3 0 18%, #ffbd32 24% 48%, #f04416 65%, transparent 72%); filter: drop-shadow(0 0 8px #ff681d); transform: rotate(12deg); }
@@ -306,8 +289,6 @@
 		main.phase-spot { justify-content: flex-end; pointer-events: none; }
 		main.phase-spot .progress, main.phase-spot .rank-panel, main.phase-spot .question-card, main.phase-spot #status, main.phase-spot #touch-surface, main.phase-spot .answer-controls { display: none; }
 		.spot-question-number { color: var(--warm); font-size: clamp(16px, 3.5vw, 24px); font-weight: 900; margin-right: 1em; }
-=======
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 		body.show-final-results main { display: none; }
 		#final-result .restart-button { display: block; width: min(100%, 320px); min-height: 42px; margin-top: 4px; }
 		@keyframes appear { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
@@ -350,7 +331,6 @@
 			.answer-correct-text { margin-bottom: 4px; font-size: 11px; }
 			.answer-explanation { font-size: 13px; line-height: 1.5; }
 			.continue-button { min-height: 34px; margin-top: 8px; padding: 6px 12px; font-size: 12px; }
-<<<<<<< HEAD
 			.spot-feedback { gap: 4px; padding: 6px 16px; }
 			.spot-feedback-title { font-size: 8px; }
 			.spot-feedback-count { font-size: 17px; }
@@ -367,9 +347,6 @@
 			.spot-decision-row { min-height: 42px; gap: 8px; padding-top: 2px; }
 			.spot-confirm { min-width: 142px; min-height: 36px; padding: 5px 14px; font-size: 13px; }
 			.spot-count { font-size: 9px; }
-=======
-			.timer-track { width: 82px; height: 6px; }
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 			#final-result { gap: 5px; padding: 8px 20px; }
 			.final-result-content { gap: 5px; }
 			.final-heading { font-size: 8px; }
@@ -421,7 +398,6 @@
 			.answer { padding: 4px 6px; }
 			.answer-text { font-size: 13px; line-height: 1.15; }
 			.answer-controls { min-height: 36px; }
-<<<<<<< HEAD
 			.decision-button { min-height: 36px; min-width: 130px; margin: 2px 0 6px; padding: 5px 14px; font-size: 12px; }
 			main.phase-spot .question-card { padding: 4px 9px; }
 			main.phase-spot .question { font-size: 13px; }
@@ -437,9 +413,6 @@
 			.feedback-marker { width: 24px; height: 24px; font-size: 9px; }
 			.feedback-legend { font-size: 7px; }
 			.show-results-button { min-height: 27px; min-width: 140px; padding: 4px 10px; font-size: 10px; }
-=======
-			.decision-button { min-height: 31px; min-width: 118px; margin: 2px 0; padding: 4px 12px; font-size: 11px; }
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 			#final-result { gap: 3px; padding: 3px 14px; }
 			.final-result-content { gap: 3px; }
 			.final-heading { font-size: 7px; }
@@ -463,7 +436,6 @@
 	</style>
 </head>
 	<body>
-<<<<<<< HEAD
 	<div id="spot-background" aria-hidden="true">
 		<div id="spot-background-image">
 			<img id="spot-question-image" src="images/02-01.png" alt="">
@@ -473,8 +445,6 @@
 		<path data-arrow="left"></path>
 		<path data-arrow="right"></path>
 	</svg>
-=======
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 	<main>
 		<p id="name-load-error" class="name-load-error" role="alert" hidden>ニックネームを<ruby>読<rt>よ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>めなかったため、「<ruby>親<rt>おや</rt></ruby>」「<ruby>子<rt>こ</rt></ruby>」で<ruby>始<rt>はじ</rt></ruby>めます。</p>
 		<div class="progress"><span id="question-number">クイズ  <ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby> / 10<ruby>問<rt>もん</rt></ruby></span></div>
@@ -504,14 +474,10 @@
 		</div>
 		<div class="answer-controls"><button id="answer-submit" class="decision-button" type="button" disabled><ruby>決定<rt>けってい</rt></ruby></button></div>
 
-<<<<<<< HEAD
 		<section id="spot-stage" class="spot-stage" aria-label="最終ステージの問題">
 			<div class="spot-controls"><span id="spot-question-number" class="spot-question-number"></span><span id="spot-count" class="spot-count"></span></div>
 			<div class="spot-decision-row"><button id="spot-clear" class="spot-clear" type="button">クリア</button><button id="spot-confirm" class="spot-confirm" type="button" disabled>決定</button></div>
 		</section>
-=======
-		<footer>決定後、正解と解説を確認して次へ進みます</footer>
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 	</main>
 	<section id="final-result" aria-labelledby="final-result-title" aria-modal="true" role="dialog">
 		<div class="final-result-content">
@@ -535,16 +501,6 @@
 					<div class="stage-score-lane child"><span class="stage-score-player" data-player-name="child"><ruby>子<rt>こ</rt></ruby></span><span class="stage-score-track"><span id="quiz-child-fill" class="stage-score-fill"></span></span><span id="quiz-child-value" class="stage-score-value">0<ruby>点<rt>てん</rt></ruby></span></div>
 				</div>
 			</div>
-<<<<<<< HEAD
-=======
-			<div class="stage-score-row">
-				<strong class="stage-score-name">第2ステージ</strong>
-				<div class="stage-score-lanes">
-					<div class="stage-score-lane"><span class="stage-score-player">親</span><span class="stage-score-track"><span id="relaxed-parent-fill" class="stage-score-fill"></span></span><span id="relaxed-parent-value" class="stage-score-value">0点</span></div>
-					<div class="stage-score-lane child"><span class="stage-score-player">子</span><span class="stage-score-track"><span id="relaxed-child-fill" class="stage-score-fill"></span></span><span id="relaxed-child-value" class="stage-score-value">0点</span></div>
-				</div>
-			</div>
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 		</div>
 		<div class="final-accuracy" aria-label="親子それぞれの正答率">
 			<div class="accuracy-row"><span class="accuracy-person" data-player-name="parent"><ruby>親<rt>おや</rt></ruby></span><span class="accuracy-track"><span id="parent-accuracy-fill" class="accuracy-fill"></span></span><span id="parent-accuracy-value" class="accuracy-value">0 / 10<ruby>問<rt>もん</rt></ruby></span></div>
@@ -559,7 +515,6 @@
 		<button id="restart-button" class="restart-button" type="button">アンケートに<ruby>答<rt>こた</rt></ruby>える</button>
 		</div>
 	</section>
-<<<<<<< HEAD
 	<section id="spot-feedback" class="spot-feedback" aria-labelledby="spot-feedback-count" aria-modal="true" role="dialog">
 		<p class="spot-feedback-title">FINAL STAGE / ANSWER CHECK</p>
 		<h2 id="spot-feedback-count" class="spot-feedback-count"></h2>
@@ -568,8 +523,6 @@
 		<p class="feedback-legend">緑: 発見　赤: 見逃し</p>
 		<button id="show-results-button" class="show-results-button" type="button">次の問題へ</button>
 	</section>
-=======
->>>>>>> 98b1eee1befba63cce5f464f59f2a80449f68fdd
 	<section id="answer-screen" class="answer-screen" aria-labelledby="answer-outcome" aria-modal="true" role="dialog">
 		<div id="answer-card" class="answer-card">
 			<p id="answer-kicker" class="answer-kicker">クイズ・<ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby></p>
