@@ -11,15 +11,26 @@
     html, body { margin: 0; min-height: 100%; }
     body { min-height: 100svh; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; background: #261319 url("images/01.jpg") center / cover no-repeat; -webkit-user-select: none; user-select: none; }
     body::before { content: ''; position: fixed; inset: 0; background: rgba(9, 25, 24, .42); pointer-events: none; }
-    .start-screen { display: flex; flex-direction: column; justify-content: center; width: min(100%, 760px); min-height: 100svh; margin: auto; padding: max(24px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); position: relative; z-index: 1; }
+    .start-screen { display: flex; flex-direction: column; justify-content: center; width: min(100%, 760px); min-height: 100svh; margin: auto; padding: max(24px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); position: fixed; top: 0; left: 50%; z-index: 1; transform: translateX(-50%) scale(var(--start-scale, 1)); transform-origin: top center; }
     .start-eyebrow { margin: 0 0 10px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .16em; }
     h1 { max-width: 620px; margin: 0; font-size: clamp(30px, 8vw, 52px); line-height: 1.2; }
     .lead { max-width: 560px; margin: 16px 0 24px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+    rt { font-size: .5em; }
     .rules-card { max-width: 620px; padding: 18px; border: 1px solid rgba(94, 234, 212, .35); border-radius: 16px; background: rgba(15, 23, 42, .82); }
     .rules-card h2 { margin: 0 0 12px; color: var(--accent); font-size: 16px; }
     ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
     li { display: flex; gap: 10px; align-items: baseline; color: var(--ink); font-size: 14px; line-height: 1.5; }
     li::before { content: '●'; color: var(--warm); font-size: 10px; }
+    .name-form { max-width: 620px; margin-top: 16px; }
+    .name-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .name-field { display: grid; gap: 4px; color: var(--ink); font-size: 13px; font-weight: 800; }
+    .name-field input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid rgba(94, 234, 212, .55); border-radius: 9px; color: #fff; background: #0f172a; font: inherit; -webkit-user-select: text; user-select: text; }
+    .name-field input[aria-invalid="true"] { border-color: #fda4af; }
+    .name-count { color: #e2e8f0; font-size: 11px; }
+    .name-count.is-invalid { color: #fecaca; }
+    .name-hint, .name-error { margin: 8px 0 0; padding: 8px 12px; border-radius: 9px; background: #0f172a; font-size: 14px; font-weight: 700; line-height: 1.7; }
+    .name-hint { color: #fff; }
+    .name-error { color: #fecaca; }
     button { width: min(100%, 360px); margin-top: 24px; padding: 16px 20px; border: 0; border-radius: 14px; color: #042f2e; background: var(--accent); box-shadow: 0 8px 0 rgba(13, 148, 136, .45); font: inherit; font-size: 17px; font-weight: 800; }
     button:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(13, 148, 136, .45); }
     @media (orientation: landscape) and (max-height: 500px) {
@@ -31,6 +42,11 @@
       .rules-card h2 { margin-bottom: 5px; font-size: 13px; }
       ul { gap: 3px; }
       li { font-size: 11px; }
+      .name-form { margin-top: 7px; }
+      .name-fields { gap: 8px; }
+      .name-field { gap: 2px; font-size: 10px; }
+      .name-field input { padding: 5px 8px; }
+      .name-hint, .name-error { margin-top: 5px; padding: 6px 10px; font-size: 13px; }
       button { margin-top: 10px; padding: 10px; font-size: 13px; }
     }
     @media (orientation: landscape) and (max-height: 340px) {
@@ -50,19 +66,88 @@
 <body>
   <main class="start-screen">
     <p class="start-eyebrow">FAMILY BIKE QUIZ</p>
-    <h1>親子でチャレンジ！<br>自転車ルールクイズ</h1>
-    <p class="lead">親子で同じ答えを選んで、息を合わせて称号をゲットしよう。</p>
+    <h1><ruby>親子<rt>おやこ</rt></ruby>でチャレンジ！<br><ruby>自転車<rt>じてんしゃ</rt></ruby>ルールクイズ</h1>
+    <p class="lead"><ruby>親子<rt>おやこ</rt></ruby>で<ruby>同<rt>おな</rt></ruby>じ<ruby>答<rt>こた</rt></ruby>えを<ruby>選<rt>えら</rt></ruby>んで、<ruby>息<rt>いき</rt></ruby>を<ruby>合<rt>あ</rt></ruby>わせて<ruby>称号<rt>しょうごう</rt></ruby>をゲットしよう。</p>
     <section class="rules-card" aria-labelledby="rules-title">
       <h2 id="rules-title">あそびかた</h2>
       <ul>
-        <li>第1ステージは11問。20秒以内に親と子のピンを置くと自動で回答します。</li>
-        <li>2人とも同じ正解なら＋3点、片方だけ正解なら＋1点です。</li>
-        <li>時間切れは0点で次の問題へ進みます。</li>
-        <li>第2ステージは時間制限なしの5問です。2人の回答後に決定を押します。</li>
-        <li>得点に応じて、称号がひよっこから神へ進みます。</li>
+        <li><span>クイズは<ruby>時間制限<rt>じかんせいげん</rt></ruby>なしの10<ruby>問<rt>もん</rt></ruby>です。<ruby>子<rt>こ</rt></ruby>、<ruby>親<rt>おや</rt></ruby>の<ruby>順<rt>じゅん</rt></ruby>にピンを<ruby>置<rt>お</rt></ruby>き、それぞれ<ruby>決定<rt>けってい</rt></ruby>を<ruby>押<rt>お</rt></ruby>します。</span></li>
+        <li><span><ruby>子<rt>こ</rt></ruby>の<ruby>回答<rt>かいとう</rt></ruby>は、<ruby>親<rt>おや</rt></ruby>のターンでは<ruby>表示<rt>ひょうじ</rt></ruby>されません。</span></li>
+        <li><span>2<ruby>人<rt>にん</rt></ruby>とも<ruby>同<rt>おな</rt></ruby>じ<ruby>正解<rt>せいかい</rt></ruby>なら＋3<ruby>点<rt>てん</rt></ruby>、<ruby>片方<rt>かたほう</rt></ruby>だけ<ruby>正解<rt>せいかい</rt></ruby>なら＋1<ruby>点<rt>てん</rt></ruby>です。</span></li>
+        <li><span><ruby>得点<rt>とくてん</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じて、<ruby>称号<rt>しょうごう</rt></ruby>がひよっこから<ruby>神<rt>かみ</rt></ruby>へ<ruby>進<rt>すす</rt></ruby>みます。</span></li>
+        <li><span>クイズの<ruby>後<rt>あと</rt></ruby>は、<ruby>最終<rt>さいしゅう</rt></ruby>ステージで<ruby>危険<rt>きけん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけよう。1か<ruby>所<rt>しょ</rt></ruby>につき1<ruby>点<rt>てん</rt></ruby>で、<ruby>結果<rt>けっか</rt></ruby>はステージごとと<ruby>合計<rt>ごうけい</rt></ruby>の<ruby>両方<rt>りょうほう</rt></ruby>を<ruby>発表<rt>はっぴょう</rt></ruby>します。<ruby>称号<rt>しょうごう</rt></ruby>は<ruby>合計<rt>ごうけい</rt></ruby>30<ruby>点<rt>てん</rt></ruby>で<ruby>最高<rt>さいこう</rt></ruby>になります。</span></li>
       </ul>
     </section>
-    <button type="button" onclick="location.href='index.html'">クイズを始める</button>
+    <form id="player-form" class="name-form">
+      <div class="name-fields">
+        <label class="name-field" for="child-name"><span><ruby>子<rt>こ</rt></ruby>のニックネーム</span><input id="child-name" name="child" type="text" value="子" autocomplete="off" aria-describedby="nickname-hint child-count"><span id="child-count" class="name-count" aria-live="polite"></span></label>
+        <label class="name-field" for="parent-name"><span><ruby>親<rt>おや</rt></ruby>のニックネーム</span><input id="parent-name" name="parent" type="text" value="親" autocomplete="off" aria-describedby="nickname-hint parent-count"><span id="parent-count" class="name-count" aria-live="polite"></span></label>
+      </div>
+      <p id="nickname-hint" class="name-hint">ニックネームは<ruby>半角<rt>はんかく</rt></ruby>1バイト・<ruby>全角<rt>ぜんかく</rt></ruby>2バイトで、あわせて10バイトまで。<ruby>空欄<rt>くうらん</rt></ruby>なら「<ruby>子<rt>こ</rt></ruby>」「<ruby>親<rt>おや</rt></ruby>」になります。</p>
+      <p id="name-error" class="name-error" role="alert" hidden></p>
+      <button type="submit">クイズを<ruby>始<rt>はじ</rt></ruby>める</button>
+    </form>
   </main>
+  <script src="nicknames.js"></script>
+  <script>
+    const form = document.querySelector('#player-form');
+    const parentName = document.querySelector('#parent-name');
+    const childName = document.querySelector('#child-name');
+    const nameError = document.querySelector('#name-error');
+    const nameStorageKey = 'bikeQuizPlayerNames';
+    const startScreen = document.querySelector('.start-screen');
+
+    function fitStartScreen() {
+      const scale = Math.min(1, (window.innerHeight - 1) / startScreen.offsetHeight);
+      startScreen.style.setProperty('--start-scale', scale);
+    }
+
+    new ResizeObserver(fitStartScreen).observe(startScreen);
+    window.addEventListener('resize', fitStartScreen);
+    fitStartScreen();
+
+    function updateNicknameValidity(input, counter) {
+      const length = nicknameByteLength(input.value);
+      const valid = length <= nicknameByteLimit;
+      input.setCustomValidity(valid ? '' : 'ニックネームは はんかく1・ぜんかく2で 10バイトまでです。');
+      input.setAttribute('aria-invalid', String(!valid));
+      counter.classList.toggle('is-invalid', !valid);
+      counter.textContent = `${length} / ${nicknameByteLimit}${valid ? '' : '（10をこえています）'}`;
+    }
+
+    try {
+      const saved = sessionStorage.getItem(nameStorageKey);
+      if (saved !== null) {
+        const names = JSON.parse(saved);
+        if (!names || typeof names.parent !== 'string' || typeof names.child !== 'string') throw new Error('Invalid saved player names');
+        parentName.value = names.parent;
+        childName.value = names.child;
+      }
+    } catch (error) {
+      console.error('ニックネームの読み込みに失敗しました。', error);
+      nameError.textContent = 'ニックネームを よみこめませんでした。かくにんしてから はじめてください。';
+      nameError.hidden = false;
+    }
+
+    for (const [input, counter] of [[childName, document.querySelector('#child-count')], [parentName, document.querySelector('#parent-count')]]) {
+      const update = () => updateNicknameValidity(input, counter);
+      input.addEventListener('input', update);
+      update();
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const names = { parent: parentName.value.trim() || '親', child: childName.value.trim() || '子' };
+      try {
+        sessionStorage.setItem(nameStorageKey, JSON.stringify(names));
+      } catch (error) {
+        console.error('ニックネームの保存に失敗しました。', error);
+        nameError.textContent = 'ニックネームを ほぞんできませんでした。ブラウザーのせっていを かくにんしてください。';
+        nameError.hidden = false;
+        return;
+      }
+      window.location.href = 'index.html';
+    });
+  </script>
 </body>
 </html>

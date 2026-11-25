@@ -15,6 +15,8 @@
 			--accent: #5eead4;
 			--accent-strong: #14b8a6;
 			--warm: #fbbf24;
+			--child-pin: #ffffff;
+			--parent-pin: #111827;
 		}
 
 		* { box-sizing: border-box; }
@@ -46,22 +48,20 @@
 		body.stage-swamp { background: #261319; }
 		body.stage-swamp::before { background: url("images/01.jpg") center / cover no-repeat; }
 		body.stage-forest { background: #183126; }
-		body.stage-forest::before { background: url("images/02.jpg") center / cover no-repeat; }
+		body.stage-forest::before { background: var(--question-background) center / cover no-repeat; }
 		body.stage-meadow { background: #263746; }
 		body.stage-meadow::before { background: url("images/03.jpg") center / cover no-repeat; }
 		body.stage-starlight { background: #536477; }
 		body.stage-starlight::before { background: url("images/04_雲の上.jpg") center / cover no-repeat; }
 		body.stage-heaven { background: #b8dff2; }
 		body.stage-heaven::before { background: url("images/05_天国.jpg") center / cover no-repeat; }
-		body.phase-timed.stage-swamp::before { background-image: url("images/01.jpg"); }
-		body.phase-relaxed.stage-forest::before { background-image: url("images/02.jpg"); }
-		body.phase-spot.stage-meadow::before { background: none; }
+		body.phase-spot::before { background: none; }
 		body.show-final-results { background: #111827; }
 		body.show-final-results::before { background: none; opacity: 0; }
-		#spot-background { display: none; position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+		#spot-background { display: none; position: fixed; inset: 0; z-index: 1; overflow: hidden; }
 		body.phase-spot #spot-background { display: block; }
-		#spot-background-image { position: absolute; left: 50%; top: 50%; width: max(100vw, 150svh); aspect-ratio: 3 / 2; transform: translate(-50%, -50%); }
-		#spot-background-image img { display: block; width: 100%; height: 100%; }
+		#spot-background-image { position: absolute; inset: 0; cursor: crosshair; }
+		#spot-background-image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: saturate(1.05) contrast(1.1); pointer-events: none; }
 		main {
 			display: flex;
 			flex-direction: column;
@@ -72,6 +72,7 @@
 			position: relative;
 			z-index: 2;
 		}
+		main:not(.phase-spot) { position: fixed; top: 0; left: 50%; transform: translateX(-50%) scale(var(--quiz-scale, 1)); transform-origin: top center; }
 
 		header { padding: 6px 2px 18px; }
 		.eyebrow {
@@ -94,46 +95,59 @@
 			padding: 14px 16px;
 			border: 1px solid var(--line);
 			border-radius: 14px;
-			background: var(--panel);
+			background: rgba(15, 23, 42, .68);
 			transition: border-color .2s, background .2s;
 		}
 		.status strong { font-size: 16px; }
-		.status.is-ready { border-color: rgba(94, 234, 212, .55); background: rgba(13, 148, 136, .16); }
-		.status.is-two { border-color: rgba(251, 191, 36, .75); background: rgba(180, 83, 9, .2); }
-		.pin-instructions { color: var(--muted); font-size: 12px; }
+		.status.is-ready { border-color: rgba(94, 234, 212, .55); background: rgba(21, 48, 47, .68); }
+		.status.is-two { border-color: rgba(251, 191, 36, .75); background: rgba(52, 41, 30, .68); }
+		.turn-label { display: block; max-width: 100%; color: var(--accent); font-size: 19px; font-weight: 900; overflow-wrap: anywhere; text-align: center; }
+		.pin-instructions { color: #fff; font-size: 14px; font-weight: 700; }
 		.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 		.pin-tray { display: flex; gap: 10px; margin: 0 auto; }
-		.player-pin { position: relative; z-index: 4; width: 64px; min-height: 42px; padding: 6px 10px; border: 2px solid #5eead4; border-radius: 999px; color: #042f2e; background: #5eead4; font: inherit; font-size: 14px; font-weight: 900; touch-action: none; user-select: none; }
-		.player-pin[data-player="child"] { border-color: #fbbf24; background: #fbbf24; }
-		.player-pin.is-dragging { position: fixed; z-index: 30; transform: translate(-50%, -50%) scale(1.12); pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+		.player-pin { position: relative; z-index: 4; display: grid; place-items: center; width: 76px; min-width: 76px; max-width: 76px; height: 76px; min-height: 76px; padding: 8px; border: 3px solid rgba(255, 226, 128, .98); border-radius: 50%; color: #4a2d00; background: radial-gradient(circle at 30% 25%, rgba(255, 244, 168, .98), rgba(255, 193, 7, .94) 48%, rgba(161, 98, 0, .96)); box-shadow: inset 0 0 0 2px rgba(255,255,255,.62), inset 0 0 0 5px rgba(120,72,8,.38), inset 0 5px 8px rgba(255,255,255,.42), 0 5px 0 #704810, 0 8px 12px rgba(0,0,0,.35); font: inherit; font-size: 12px; font-weight: 900; line-height: 1.05; text-align: center; overflow-wrap: anywhere; touch-action: none; user-select: none; }
+		.player-pin[hidden] { display: none; }
+		.player-pin.is-dragging { position: fixed; z-index: 30; transform: translate(-50%, -50%) scale(1.12); pointer-events: none; box-shadow: inset 0 0 0 2px rgba(255,255,255,.55), inset 0 0 0 5px rgba(120,72,8,.36), 0 10px 24px rgba(0,0,0,.5); }
 		.placed-pins { display: flex; justify-content: center; gap: 6px; min-height: 0; margin-top: 5px; }
-		.placed-pin { min-width: 30px; padding: 3px 7px; border-radius: 999px; color: #042f2e; background: #5eead4; font-size: 10px; font-weight: 900; }
-		.placed-pin.child { background: #fbbf24; }
+		.placed-pin { display: grid; place-items: center; width: 42px; min-width: 42px; max-width: 42px; height: 42px; min-height: 42px; padding: 4px; border: 2px solid rgba(255, 226, 128, .98); border-radius: 50%; color: #4a2d00; background: radial-gradient(circle at 30% 25%, rgba(255, 244, 168, .98), rgba(255, 193, 7, .94) 48%, rgba(161, 98, 0, .96)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.62), inset 0 0 0 3px rgba(120,72,8,.38), 0 2px 0 #704810, 0 3px 5px rgba(0,0,0,.3); font-size: 8px; font-weight: 900; line-height: 1; text-align: center; overflow-wrap: anywhere; }
+		.pin-guidance { position: fixed; inset: 0; z-index: 3; width: 100vw; height: 100vh; overflow: visible; pointer-events: none; visibility: hidden; }
+		.pin-guidance.is-visible { visibility: visible; }
+		.pin-guidance > path[data-arrow] { opacity: 0; clip-path: inset(0 100% 0 0); filter: drop-shadow(0 2px 4px rgba(0,0,0,.65)); animation: arrow-grow 2.6s cubic-bezier(.42, 0, .58, 1) infinite; }
+		.pin-guidance > path[data-arrow="left"] { fill: #fb7185; }
+		.pin-guidance > path[data-arrow="right"] { fill: #60a5fa; animation-delay: 1.3s; }
+		@keyframes arrow-grow {
+			0%, 6% { clip-path: inset(0 100% 0 0); opacity: 0; }
+			10% { opacity: 1; }
+			43%, 50% { clip-path: inset(0 0 0 0); opacity: 1; }
+			55%, 100% { clip-path: inset(0 100% 0 0); opacity: 0; }
+		}
 		.answer-submit { display: block; min-width: 88px; min-height: 34px; margin: 7px 0 0 auto; padding: 6px 14px; border: 0; border-radius: 9px; color: #042f2e; background: var(--accent); font: inherit; font-size: 12px; font-weight: 900; }
 		.answer-submit:disabled { opacity: .45; }
 		.answer-controls { display: flex; justify-content: center; min-height: 42px; }
-		main.phase-timed .answer-controls { display: none; }
-		.decision-button { min-width: 120px; min-height: 38px; margin: 4px 0; padding: 8px 18px; border: 0; border-radius: 10px; color: #042f2e; background: var(--accent); font: inherit; font-size: 14px; font-weight: 900; }
-		.decision-button:disabled { opacity: .42; }
+		.decision-button { min-width: 168px; min-height: 54px; margin: 6px 0 10px; padding: 10px 24px; border: 1px solid rgba(204, 251, 241, .9); border-radius: 15px; color: #042f2e; background: linear-gradient(180deg, #99f6e4 0%, #2dd4bf 58%, #0d9488 100%); box-shadow: inset 0 2px 0 rgba(255,255,255,.65), 0 6px 0 #0f766e, 0 10px 16px rgba(0,0,0,.38); font: inherit; font-size: 17px; font-weight: 900; cursor: pointer; transition: transform .08s ease, box-shadow .08s ease, filter .12s ease; }
+		.decision-button:disabled { border-color: rgba(203,213,225,.8); color: #334155; background: linear-gradient(180deg, #cbd5e1, #64748b); box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 5px 0 #475569, 0 8px 12px rgba(0,0,0,.32); opacity: .82; cursor: not-allowed; }
+		.decision-button:not(:disabled):hover { filter: brightness(1.08); }
+		.decision-button:not(:disabled):focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+		.decision-button:not(:disabled):active { transform: translateY(5px); box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 1px 0 #0f766e, 0 3px 6px rgba(0,0,0,.3); }
 
 		.progress { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: var(--muted); font-size: 12px; }
-		.timer-box { display: flex; align-items: center; gap: 8px; color: var(--warm); font-weight: 800; }
-		.timer-track { width: 120px; height: 7px; overflow: hidden; border-radius: 999px; background: rgba(148, 163, 184, .3); }
-		.timer-box[hidden] { display: none; }
-		.timer-fill { width: 100%; height: 100%; border-radius: inherit; background: var(--warm); transition: width .25s linear, background .25s; }
-		.timer-fill.low { background: #fb7185; }
+		#question-number { padding: 4px 9px; border-radius: 7px; color: #fff; background: rgba(2, 6, 23, .9); font-size: 14px; font-weight: 800; }
 		.stage-name { margin-left: 8px; color: var(--accent); font-weight: 700; }
-		.rank-panel { margin: 0 0 8px; padding: 6px 12px; border: 1px solid rgba(251, 191, 36, .42); border-radius: 12px; background: rgba(15, 23, 42, .7); }
+		.rank-panel { margin: 0 0 8px; padding: 6px 12px; border: 1px solid rgba(251, 191, 36, .55); border-radius: 12px; background: rgba(15, 23, 42, .88); }
 		.rank-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-		.rank-label { color: var(--muted); font-size: 11px; }
-		.rank-name { color: var(--warm); font-size: 17px; font-weight: 800; }
+		.rank-label { color: #fff; font-size: 13px; font-weight: 800; }
+		.rank-name { color: #fde68a; font-size: 18px; font-weight: 900; text-shadow: 0 1px 3px rgba(0, 0, 0, .8); }
 		.accuracy { color: var(--ink); font-size: 14px; font-weight: 700; }
 		.rank-track { height: 7px; margin-top: 4px; overflow: hidden; border-radius: 999px; background: rgba(148, 163, 184, .22); }
 		.rank-fill { width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5eead4, #fbbf24); transition: width .5s ease; }
 		.rank-next { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
-		.question-card { position: relative; z-index: 2; margin: 0 9%; padding: 18px 24px; border: 2px solid rgba(251, 191, 36, .72); border-radius: 10px; background: linear-gradient(145deg, rgba(15, 23, 42, .94), rgba(30, 41, 59, .88)); box-shadow: 0 8px 0 rgba(120, 53, 15, .45), 0 12px 28px rgba(0, 0, 0, .26); transform: perspective(600px) rotateX(3deg); }
+		.name-load-error { padding: 8px; border-radius: 8px; color: #fff; background: #7f1d1d; font-size: 12px; }
+		.question-card { position: relative; z-index: 2; margin: 0 9%; padding: 18px 24px; border: 2px solid rgba(251, 191, 36, .72); border-radius: 10px; background: linear-gradient(145deg, rgba(15, 23, 42, .78), rgba(30, 41, 59, .68)); box-shadow: 0 8px 0 rgba(120, 53, 15, .45), 0 12px 28px rgba(0, 0, 0, .26); transform: perspective(600px) rotateX(3deg); }
 		.question-card::after { content: ''; position: absolute; left: 50%; bottom: -17px; width: 5px; height: 16px; background: rgba(251, 191, 36, .72); transform: translateX(-50%); }
 		.question { margin: 0; font-size: clamp(19px, 5vw, 27px); line-height: 1.45; }
+		.question-note { display: block; margin-top: .6em; color: var(--muted); font-size: .7em; line-height: 1.6; }
+		ruby { ruby-position: over; }
+		rt { font-size: .5em; }
 		#touch-surface {
 			position: relative;
 			min-height: 238px;
@@ -141,7 +155,7 @@
 			overflow: hidden;
 			border: 1px solid var(--line);
 			border-radius: 22px;
-			background-color: rgba(15, 23, 42, .76);
+			background-color: rgba(15, 23, 42, .56);
 			touch-action: none;
 		}
 		.road-view { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -151,11 +165,14 @@
 		.answer {
 			position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
 			min-width: 0; padding: 14px 8px; border: 2px solid rgba(148, 163, 184, .28); border-radius: 16px;
-			color: var(--ink); background: rgba(30, 41, 59, .78); font: inherit; text-align: center; touch-action: none;
+			color: var(--ink); background: rgba(30, 41, 59, .54); font: inherit; text-align: center; touch-action: none;
 		}
-		.answer-label { margin-bottom: 6px; color: var(--accent); font-size: 12px; font-weight: 800; }
+		.answer[data-choice="left"] { border-color: #fb7185; background: rgba(127, 29, 29, .5); }
+		.answer[data-choice="right"] { border-color: #60a5fa; background: rgba(30, 58, 138, .5); }
+		.answer-label { margin-bottom: 6px; color: #fecaca; font-size: 16px; font-weight: 900; }
+		.answer[data-choice="right"] .answer-label { color: #bfdbfe; }
 		.answer-text { font-size: clamp(15px, 4vw, 20px); font-weight: 700; line-height: 1.35; }
-		.answer.selected { border-color: var(--accent); background: rgba(13, 148, 136, .28); }
+		.answer.selected { border-color: #fff; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .65); }
 		.answer.correct { border-color: var(--accent); background: rgba(13, 148, 136, .35); }
 		.answer.wrong { border-color: #fb7185; background: rgba(190, 24, 93, .22); }
 		.touch-point {
@@ -185,8 +202,14 @@
 		.result span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
 		.restart-button { display: none; width: 100%; margin-top: 10px; padding: 12px; border: 0; border-radius: 12px; color: #042f2e; background: var(--accent); font: inherit; font-weight: 800; }
 		.restart-button.is-visible { display: block; }
-		.answer-screen { position: fixed; inset: 0; z-index: 20; display: none; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)); background: rgba(3, 8, 20, .72); backdrop-filter: blur(8px); }
+		.answer-screen { position: fixed; inset: 0; z-index: 20; display: none; align-items: center; justify-content: center; overflow: hidden; padding: max(16px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)); background: rgba(3, 8, 20, .72); backdrop-filter: blur(8px); }
 		.answer-screen.is-visible { display: flex; animation: result-fade-in .24s ease-out both; }
+		.combo-popup { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; visibility: hidden; opacity: 0; pointer-events: none; }
+		.combo-popup.is-visible { visibility: visible; animation: combo-popup-show 1.8s ease both; }
+		.combo-popup-card { width: min(100%, 560px); padding: 24px 20px; border: 3px solid #fde68a; border-radius: 24px; color: #fff; background: linear-gradient(145deg, rgba(124, 45, 18, .97), rgba(88, 28, 135, .97)); box-shadow: 0 0 0 8px rgba(251, 191, 36, .2), 0 18px 70px rgba(0, 0, 0, .7); text-align: center; }
+		.combo-popup-title { margin: 0; color: #fef3c7; font-size: clamp(24px, 7vw, 42px); font-weight: 1000; line-height: 1.25; text-shadow: 0 3px 0 #7c2d12, 0 0 24px rgba(253, 230, 138, .8); overflow-wrap: anywhere; }
+		.combo-popup-count { margin: 8px 0 0; color: #fff; font-size: clamp(34px, 12vw, 72px); font-weight: 1000; line-height: 1; letter-spacing: .04em; text-shadow: 0 4px 0 #7c2d12, 0 0 28px rgba(251, 191, 36, .9); }
+		.combo-popup-message { margin: 10px 0 0; color: #fff; font-size: clamp(16px, 4vw, 22px); font-weight: 800; }
 		.spot-feedback { position: fixed; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; overflow-y: auto; padding: max(12px, env(safe-area-inset-top)) 18px max(12px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827; }
 		.spot-feedback.is-visible { display: flex; animation: result-fade-in .25s ease-out both; }
 		.spot-feedback-title { margin: 0; color: var(--warm); font-size: 11px; font-weight: 900; letter-spacing: .1em; }
@@ -198,25 +221,37 @@
 		.feedback-marker.found { border-color: #5eead4; background: rgba(13,148,136,.82); box-shadow: 0 0 0 4px rgba(94,234,212,.2), 0 0 20px rgba(94,234,212,.65); }
 		.feedback-legend { margin: 0; color: var(--muted); font-size: 10px; }
 		.show-results-button { min-width: 190px; min-height: 40px; padding: 8px 18px; border: 0; border-radius: 10px; color: #042f2e; background: var(--accent); font: inherit; font-size: 14px; font-weight: 900; }
-		.answer-card { width: min(100%, 640px); max-height: 100%; overflow: auto; padding: 22px 24px; border: 1px solid rgba(94, 234, 212, .5); border-radius: 16px; background: rgba(15, 23, 42, .96); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+		.answer-card { flex-shrink: 0; width: min(100%, 640px); padding: 22px 24px; border: 1px solid rgba(94, 234, 212, .5); border-radius: 16px; background: rgba(15, 23, 42, .96); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
 		.answer-card.is-correct { border-color: rgba(94, 234, 212, .8); }
 		.answer-card.is-wrong { border-color: rgba(251, 113, 133, .8); }
 		.answer-kicker { margin: 0 0 6px; color: var(--muted); font-size: 11px; font-weight: 800; }
-		.answer-outcome { margin: 0; color: var(--accent); font-size: clamp(24px, 6vw, 36px); font-weight: 900; }
+		.answer-outcome { display: grid; gap: 5px; margin: 0; color: var(--accent); font-size: clamp(24px, 6vw, 36px); font-weight: 900; }
+		.player-outcome { display: block; font-size: clamp(22px, 5.5vw, 32px); overflow-wrap: anywhere; animation: answer-celebrate .55s cubic-bezier(.2, .8, .2, 1) both; }
+		.player-outcome.is-correct { color: var(--accent); text-shadow: 0 0 18px rgba(94, 234, 212, .65); }
+		.player-outcome.is-wrong { color: #fda4af; }
 		.answer-card.is-wrong .answer-outcome { color: #fda4af; }
 		.answer-points { margin: 4px 0 14px; color: var(--warm); font-size: 18px; font-weight: 900; }
 		.answer-correct-text { margin: 0 0 10px; font-size: 14px; font-weight: 800; }
-		.answer-explanation { margin: 0; color: #d1d9e6; font-size: 13px; line-height: 1.7; }
+		.answer-explanation { margin: 0; color: #d1d9e6; font-size: 16px; line-height: 1.7; white-space: pre-line; }
 		.continue-button { display: block; width: 100%; min-height: 44px; margin-top: 18px; padding: 10px 16px; border: 0; border-radius: 10px; color: #042f2e; background: var(--accent); font: inherit; font-size: 15px; font-weight: 900; }
 		@keyframes result-fade-in { from { opacity: 0; } to { opacity: 1; } }
-		.spot-stage { display: none; flex: 1; min-height: 0; }
-		.spot-stage.is-visible { display: flex; flex-direction: column; }
-		.spot-stage.is-complete .spot-pair, .spot-stage.is-complete .spot-controls { display: none; }
-		.spot-stage.is-complete { justify-content: center; }
-		#final-result { position: fixed; inset: 0; z-index: 30; display: none; align-content: center; justify-items: center; gap: 10px; overflow-y: auto; padding: max(18px, env(safe-area-inset-top)) 22px max(18px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827; }
-		#final-result.is-visible { display: grid; animation: result-fade-in .3s ease-out both; }
+		@keyframes answer-celebrate { 0% { opacity: 0; transform: scale(.72); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+		@keyframes combo-popup-show { 0% { visibility: visible; opacity: 0; transform: scale(.65) rotate(-4deg); } 12%, 78% { visibility: visible; opacity: 1; transform: scale(1) rotate(0); } 100% { visibility: hidden; opacity: 0; transform: scale(1.08); } }
+		@media (prefers-reduced-motion: reduce) { .combo-popup.is-visible { animation: none; visibility: visible; opacity: 1; transform: none; } }
+		.spot-stage { display: none; width: min(100%, 680px); margin: 0 auto; padding: 12px 10px 8px; border-radius: 12px; background: rgba(15, 23, 42, .76); backdrop-filter: blur(6px); pointer-events: auto; }
+		.spot-stage.is-visible { display: flex; flex-direction: column; gap: 10px; }
+		#final-result { position: fixed; inset: 0; z-index: 30; display: none; align-items: center; justify-content: center; overflow: hidden; padding: max(18px, env(safe-area-inset-top)) 22px max(18px, env(safe-area-inset-bottom)); color: var(--ink); background: #111827; }
+		#final-result.is-visible { display: flex; animation: result-fade-in .3s ease-out both; }
+		.final-result-content { display: grid; flex-shrink: 0; justify-items: center; gap: 10px; width: min(100%, 640px); }
 		.final-heading { margin: 0; color: var(--warm); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
 		.final-title { margin: 0; font-size: clamp(28px, 6vw, 42px); font-weight: 900; text-align: center; }
+		.stage-result { display: grid; justify-items: center; gap: 5px; width: min(100%, 640px); padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(30, 41, 59, .6); }
+		.stage-result-title { margin: 0; color: var(--muted); font-size: 13px; }
+		.stage-result.is-total { gap: 8px; padding: 18px 16px; border: 2px solid rgba(251, 191, 36, .8); background: linear-gradient(145deg, rgba(87, 52, 16, .9), rgba(15, 70, 65, .9)); box-shadow: 0 0 28px rgba(251, 191, 36, .18); }
+		.is-total .stage-result-title { color: #fde68a; font-size: 18px; }
+		.is-total .final-score { color: #fff; font-size: clamp(30px, 7vw, 44px); text-shadow: 0 2px 12px rgba(0, 0, 0, .45); }
+		.is-total .final-summary { color: #a7f3d0; font-size: clamp(17px, 4vw, 23px); font-weight: 900; }
+		.stage-result:not(.is-total) .final-score { color: #cbd5e1; font-size: 16px; }
 		.final-score { margin: 0; color: var(--accent); font-size: clamp(20px, 4vw, 28px); font-weight: 900; }
 		.final-summary { max-width: 620px; margin: 0; color: var(--muted); font-size: 12px; text-align: center; }
 		.stage-score-note { margin: 0; color: var(--muted); font-size: 9px; text-align: center; }
@@ -224,21 +259,18 @@
 		.stage-score-row { display: grid; grid-template-columns: 90px minmax(0, 1fr); align-items: center; gap: 10px; min-height: 34px; }
 		.stage-score-name { color: var(--ink); font-size: 11px; font-weight: 900; }
 		.stage-score-lanes { display: grid; gap: 3px; }
-		.stage-score-lane { display: grid; grid-template-columns: 22px minmax(0, 1fr) 34px; align-items: center; gap: 5px; }
-		.stage-score-player { color: var(--muted); font-size: 9px; font-weight: 800; }
+		.stage-score-lane { display: grid; grid-template-columns: minmax(22px, max-content) minmax(0, 1fr) 34px; align-items: center; gap: 5px; }
+		.stage-score-player { max-width: min(120px, 24vw); color: var(--muted); font-size: 9px; font-weight: 800; overflow-wrap: anywhere; }
 		.stage-score-track { height: 6px; overflow: hidden; border-radius: 999px; background: rgba(148, 163, 184, .2); }
 		.stage-score-fill { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5eead4, #14b8a6); transition: width .5s ease; }
 		.stage-score-lane.child .stage-score-fill { background: linear-gradient(90deg, #fde68a, #f59e0b); }
 		.stage-score-value { color: var(--ink); font-size: 9px; font-weight: 800; text-align: right; }
 		.final-accuracy { width: min(100%, 640px); display: grid; gap: 5px; margin: 3px 0 2px; }
-		.accuracy-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) 72px; align-items: center; gap: 9px; }
-		.accuracy-person { font-size: 12px; font-weight: 900; }
-		.accuracy-person.child { color: var(--warm); }
+		.accuracy-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) 88px; align-items: center; gap: 9px; }
+		.accuracy-person { max-width: min(120px, 24vw); font-size: 12px; font-weight: 900; overflow-wrap: anywhere; }
 		.accuracy-track { height: 12px; overflow: hidden; border-radius: 999px; background: rgba(148, 163, 184, .25); }
 		.accuracy-fill { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5eead4, #14b8a6); transition: width .6s ease; }
 		.accuracy-row.child .accuracy-fill { background: linear-gradient(90deg, #fde68a, #f59e0b); }
-		.accuracy-row.combined .accuracy-fill { background: linear-gradient(90deg, #fca5a5, #ef4444); }
-		.accuracy-row.combined .accuracy-person { color: #bfdbfe; }
 		.accuracy-value { color: var(--ink); font-size: 12px; font-weight: 800; text-align: right; white-space: nowrap; }
 		.diff-edit { position: absolute; z-index: 1; pointer-events: none; }
 		.diff-window { left: 78%; top: 25%; width: 5%; height: 8%; border: 2px solid #ffed9e; background: #ff5b19; box-shadow: 0 0 12px 5px rgba(255, 76, 10, .9); }
@@ -246,7 +278,7 @@
 		.diff-skull { left: 88%; top: 77%; width: 5%; height: 7%; border-radius: 48% 48% 42% 42%; background: #eee5cd; box-shadow: inset -3px -2px 0 #9e8b7a; }
 		.diff-skull::before { content: ''; position: absolute; left: 18%; top: 35%; width: 64%; height: 32%; background: radial-gradient(circle at 25% 45%, #241b20 0 20%, transparent 24%), radial-gradient(circle at 75% 45%, #241b20 0 20%, transparent 24%); }
 		.diff-skull::after { content: ''; position: absolute; left: 35%; bottom: -10%; width: 30%; height: 25%; background: repeating-linear-gradient(90deg, #eee5cd 0 2px, #716257 2px 3px); }
-		.spot-marker { position: fixed; z-index: 3; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 3px solid #5eead4; border-radius: 50%; color: white; background: rgba(20, 184, 166, .58); font-size: 13px; font-weight: 900; line-height: 28px; text-align: center; box-shadow: 0 0 0 3px rgba(20,184,166,.25); pointer-events: none; }
+		.spot-marker { position: absolute; z-index: 3; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 3px solid #5eead4; border-radius: 50%; color: white; background: rgba(20, 184, 166, .58); font-size: 13px; font-weight: 900; line-height: 28px; text-align: center; box-shadow: 0 0 0 3px rgba(20,184,166,.25); pointer-events: none; }
 		.spot-controls { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: rgba(2, 6, 23, .76); backdrop-filter: blur(4px); }
 		.spot-count { flex: 1; color: var(--muted); font-size: 11px; }
 		.spot-clear, .spot-confirm { min-height: 38px; padding: 8px 16px; border: 0; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 800; }
@@ -254,13 +286,11 @@
 		.spot-decision-row { position: relative; display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 54px; padding-top: 4px; }
 		.spot-confirm { min-width: 150px; min-height: 42px; color: #042f2e; background: var(--accent); font-size: 15px; }
 		.spot-confirm:disabled { opacity: .45; }
-		main.phase-spot .rank-panel, main.phase-spot #status, main.phase-spot #touch-surface, main.phase-spot .answer-controls, main.phase-spot footer { display: none; }
-		main.phase-spot .spot-pair { display: none; }
-		main.phase-spot .question-card { margin: 0 0 6px; padding: 6px 12px; }
-		main.phase-spot .question { font-size: 15px; }
+		main.phase-spot { justify-content: flex-end; pointer-events: none; }
+		main.phase-spot .progress, main.phase-spot .rank-panel, main.phase-spot .question-card, main.phase-spot #status, main.phase-spot #touch-surface, main.phase-spot .answer-controls { display: none; }
+		.spot-question-number { color: var(--warm); font-size: clamp(16px, 3.5vw, 24px); font-weight: 900; margin-right: 1em; }
 		body.show-final-results main { display: none; }
 		#final-result .restart-button { display: block; width: min(100%, 320px); min-height: 42px; margin-top: 4px; }
-		footer { padding-top: 14px; color: #7f8ba1; font-size: 11px; text-align: center; }
 		@keyframes appear { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
 
 		@media (orientation: landscape) and (max-height: 500px) {
@@ -270,26 +300,28 @@
 			h1 { font-size: 22px; }
 			.intro { display: none; }
 			.progress { margin-bottom: 5px; font-size: 10px; }
+			#question-number { padding: 0 7px; font-size: 12px; line-height: 1; }
 			.rank-panel { margin-bottom: 5px; padding: 5px 9px; }
 			.rank-name { font-size: 14px; }
 			.rank-track { height: 7px; margin-top: 4px; }
 			.rank-next { margin-top: 2px; font-size: 8px; }
 			.question-card { padding: 8px 12px; }
 			.question { font-size: 17px; line-height: 1.25; }
-			.status { min-height: 30px; padding: 3px 8px; }
+			.status { gap: 2px; min-height: 30px; padding: 3px 8px; }
 			.status strong { font-size: 13px; }
+			.turn-label { font-size: 14px; }
 			#touch-surface { min-height: 112px; margin: 4px 0 2px; border-radius: 16px; }
 			.answers { inset: 8px; gap: 10px; }
 			.answer { padding: 9px 10px; border-radius: 12px; }
 			.answer-label { margin-bottom: 2px; font-size: 10px; }
 			.answer-text { font-size: 15px; }
-			.pin-instructions { font-size: 9px; }
+			.pin-instructions { font-size: 11px; }
 			.pin-tray { gap: 8px; }
-			.player-pin { width: 50px; min-height: 36px; padding: 4px 7px; font-size: 12px; }
+			.player-pin { width: 62px; min-width: 62px; max-width: 62px; height: 62px; min-height: 62px; padding: 6px; font-size: 10px; }
 			.placed-pins { margin-top: 3px; }
-			.placed-pin { min-width: 26px; padding: 2px 6px; font-size: 8px; }
+			.placed-pin { width: 36px; min-width: 36px; max-width: 36px; height: 36px; min-height: 36px; padding: 3px; font-size: 7px; }
 			.answer-controls { justify-content: center; min-height: 44px; }
-			.decision-button { min-height: 38px; min-width: 132px; margin: 3px 0; padding: 7px 18px; font-size: 13px; }
+			.decision-button { min-height: 44px; min-width: 148px; margin: 4px 0 8px; padding: 8px 20px; font-size: 15px; }
 			.touch-point { width: 58px; height: 58px; margin: -29px 0 0 -29px; }
 			.touch-point::after { font-size: 18px; }
 			.answer-card { width: min(100%, 700px); padding: 12px 16px; }
@@ -297,7 +329,7 @@
 			.answer-outcome { font-size: 23px; }
 			.answer-points { margin: 1px 0 5px; font-size: 14px; }
 			.answer-correct-text { margin-bottom: 4px; font-size: 11px; }
-			.answer-explanation { font-size: 10px; line-height: 1.45; }
+			.answer-explanation { font-size: 13px; line-height: 1.5; }
 			.continue-button { min-height: 34px; margin-top: 8px; padding: 6px 12px; font-size: 12px; }
 			.spot-feedback { gap: 4px; padding: 6px 16px; }
 			.spot-feedback-title { font-size: 8px; }
@@ -307,7 +339,7 @@
 			.feedback-marker { width: 27px; height: 27px; font-size: 10px; }
 			.feedback-legend { font-size: 8px; }
 			.show-results-button { min-height: 32px; min-width: 160px; padding: 5px 12px; font-size: 11px; }
-			.timer-track { width: 82px; height: 6px; }
+
 			.spot-image { max-height: 100%; }
 			.spot-marker { width: 28px; height: 28px; margin: -14px 0 0 -14px; font-size: 11px; line-height: 22px; }
 			.spot-controls { padding-top: 3px; }
@@ -316,8 +348,16 @@
 			.spot-confirm { min-width: 142px; min-height: 36px; padding: 5px 14px; font-size: 13px; }
 			.spot-count { font-size: 9px; }
 			#final-result { gap: 5px; padding: 8px 20px; }
+			.final-result-content { gap: 5px; }
 			.final-heading { font-size: 8px; }
 			.final-title { font-size: 25px; }
+			.stage-result { gap: 2px; padding: 4px 8px; }
+			.stage-result-title { font-size: 11px; }
+			.stage-result.is-total { gap: 3px; padding: 7px 10px; }
+			.is-total .stage-result-title { font-size: 13px; }
+			.is-total .final-score { font-size: 25px; }
+			.is-total .final-summary { font-size: 15px; }
+			.stage-result:not(.is-total) .final-score { font-size: 12px; }
 			.final-score { font-size: 18px; }
 			.final-summary { font-size: 9px; }
 			.stage-score-note { font-size: 8px; }
@@ -325,19 +365,18 @@
 			.stage-score-row { grid-template-columns: 72px minmax(0, 1fr); gap: 6px; min-height: 26px; }
 			.stage-score-name { font-size: 9px; }
 			.stage-score-lanes { gap: 1px; }
-			.stage-score-lane { grid-template-columns: 18px minmax(0, 1fr) 30px; gap: 4px; }
+			.stage-score-lane { grid-template-columns: minmax(18px, max-content) minmax(0, 1fr) 30px; gap: 4px; }
 			.stage-score-player, .stage-score-value { font-size: 8px; }
 			.stage-score-track { height: 4px; }
 			.final-accuracy { width: min(100%, 560px); gap: 3px; margin: 1px 0; }
-			.accuracy-row { grid-template-columns: 30px minmax(0, 1fr) 60px; gap: 6px; }
+			.accuracy-row { grid-template-columns: 56px minmax(0, 1fr) 76px; gap: 6px; }
 			.accuracy-track { height: 8px; }
 			.accuracy-person, .accuracy-value { font-size: 10px; }
 			#final-result .restart-button { min-height: 34px; margin-top: 2px; padding: 5px 12px; font-size: 11px; }
-			footer { display: none; }
 		}
 		@media (orientation: landscape) and (max-height: 340px) {
 			main { padding-top: 3px; padding-bottom: 3px; }
-			.progress { margin-bottom: 2px; }
+			.progress { margin-bottom: 0; }
 			.rank-panel { margin-bottom: 3px; padding: 3px 8px; }
 			.rank-line { gap: 5px; }
 			.rank-label { font-size: 9px; }
@@ -347,12 +386,19 @@
 			.question-card { padding: 5px 9px; }
 			.question { font-size: 15px; line-height: 1.15; }
 			#status { min-height: 27px; padding: 2px 7px; }
-			#touch-surface { min-height: 94px; margin: 3px 0 2px; }
-			.answers { inset: 6px; gap: 8px; }
+			.status { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; }
+			.turn-label { font-size: 12px; }
+			.turn-label { grid-column: 1; grid-row: 1; }
+			.pin-instructions { grid-column: 3; grid-row: 1; text-align: center; }
+			.pin-tray { grid-column: 2; grid-row: 1; margin: 0; }
+			.player-pin { width: 50px; min-width: 50px; max-width: 50px; height: 50px; min-height: 50px; padding: 4px; font-size: 8px; }
+			.placed-pin { width: 32px; min-width: 32px; max-width: 32px; height: 32px; min-height: 32px; padding: 2px; font-size: 6px; }
+			#touch-surface { min-height: 82px; margin: 3px 0 2px; }
+			.answers { position: relative; inset: auto; min-height: 80px; padding: 6px; gap: 8px; }
 			.answer { padding: 4px 6px; }
 			.answer-text { font-size: 13px; line-height: 1.15; }
 			.answer-controls { min-height: 36px; }
-			.decision-button { min-height: 31px; min-width: 118px; margin: 2px 0; padding: 4px 12px; font-size: 11px; }
+			.decision-button { min-height: 36px; min-width: 130px; margin: 2px 0 6px; padding: 5px 14px; font-size: 12px; }
 			main.phase-spot .question-card { padding: 4px 9px; }
 			main.phase-spot .question { font-size: 13px; }
 			.spot-controls { padding-top: 2px; }
@@ -368,15 +414,21 @@
 			.feedback-legend { font-size: 7px; }
 			.show-results-button { min-height: 27px; min-width: 140px; padding: 4px 10px; font-size: 10px; }
 			#final-result { gap: 3px; padding: 3px 14px; }
+			.final-result-content { gap: 3px; }
 			.final-heading { font-size: 7px; }
 			.final-title { font-size: 21px; }
+			.stage-result-title { font-size: 9px; }
+			.is-total .stage-result-title { font-size: 11px; }
+			.is-total .final-score { font-size: 20px; }
+			.is-total .final-summary { font-size: 12px; }
+			.stage-result:not(.is-total) .final-score { font-size: 10px; }
 			.final-score { font-size: 15px; }
 			.final-summary { font-size: 8px; }
 			.stage-score-note { font-size: 7px; }
 			.stage-score-chart { gap: 2px; }
 			.stage-score-row { grid-template-columns: 64px minmax(0, 1fr); min-height: 23px; }
 			.final-accuracy { gap: 2px; margin: 0; }
-			.accuracy-row { grid-template-columns: 26px minmax(0, 1fr) 52px; gap: 4px; }
+			.accuracy-row { grid-template-columns: 44px minmax(0, 1fr) 62px; gap: 4px; }
 			.accuracy-track { height: 6px; }
 			.accuracy-person, .accuracy-value { font-size: 8px; }
 			#final-result .restart-button { min-height: 27px; margin-top: 0; padding: 3px 10px; font-size: 9px; }
@@ -384,29 +436,32 @@
 	</style>
 </head>
 	<body>
-	<!-- Stage 3 is temporarily disabled.
 	<div id="spot-background" aria-hidden="true">
 		<div id="spot-background-image">
-			<img src="images/03.jpg" alt="">
-			<span class="diff-edit diff-window"></span><span class="diff-edit diff-flame"></span><span class="diff-edit diff-skull"></span>
+			<img id="spot-question-image" src="images/02-01.png" alt="">
 		</div>
 	</div>
-	-->
+	<svg id="pin-guidance" class="pin-guidance" aria-hidden="true">
+		<path data-arrow="left"></path>
+		<path data-arrow="right"></path>
+	</svg>
 	<main>
-		<div class="progress"><span id="question-number">STAGE 1  第1問 / 11問</span><span id="timer-box" class="timer-box"><span id="timer-value">20秒</span><span class="timer-track"><span id="timer-fill" class="timer-fill"></span></span></span></div>
+		<p id="name-load-error" class="name-load-error" role="alert" hidden>ニックネームを<ruby>読<rt>よ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>めなかったため、「<ruby>親<rt>おや</rt></ruby>」「<ruby>子<rt>こ</rt></ruby>」で<ruby>始<rt>はじ</rt></ruby>めます。</p>
+		<div class="progress"><span id="question-number">クイズ  <ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby> / 10<ruby>問<rt>もん</rt></ruby></span></div>
 		<section class="rank-panel" aria-label="親子の称号進捗">
-			<div class="rank-line"><span class="rank-label">親子の称号</span><span id="rank-name" class="rank-name">ひよっこ</span></div>
-			<div class="rank-track" role="progressbar" aria-label="スコア進捗" aria-valuemin="0" aria-valuemax="48" aria-valuenow="0"><div id="rank-fill" class="rank-fill"></div></div>
-			<span id="rank-next" class="rank-next">次の称号まであと2点</span>
+			<div class="rank-line"><span id="rank-label" class="rank-label"><ruby>親子<rt>おやこ</rt></ruby>の<ruby>称号<rt>しょうごう</rt></ruby></span><span id="rank-name" class="rank-name">ひよっこ</span></div>
+			<div class="rank-track" role="progressbar" aria-label="スコア進捗" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0"><div id="rank-fill" class="rank-fill"></div></div>
+			<span id="rank-next" class="rank-next"><ruby>次<rt>つぎ</rt></ruby>の<ruby>称号<rt>しょうごう</rt></ruby>まであと5<ruby>点<rt>てん</rt></ruby></span>
 		</section>
 		<section class="question-card"><p id="question" class="question"></p></section>
 
-		<section id="status" class="status" aria-live="polite">
-			<span id="pin-instructions" class="pin-instructions">親・子のピンをAかBへ移動</span>
+		<section id="status" class="status" data-turn="child" aria-live="polite">
+			<span id="turn-label" class="turn-label"><ruby>子<rt>こ</rt></ruby>のターン</span>
+			<span id="pin-instructions" class="pin-instructions"><ruby>子<rt>こ</rt></ruby>の<ruby>番<rt>ばん</rt></ruby>です。<ruby>子<rt>こ</rt></ruby>のコインをAかBへ<ruby>移動<rt>いどう</rt></ruby></span>
 			<strong id="status-text" class="visually-hidden" aria-live="polite">親と子の回答を待っています</strong>
 			<div class="pin-tray" aria-label="回答ピン">
-				<button class="player-pin" data-player="parent" type="button" aria-label="親のピンをドラッグ">親</button>
-				<button class="player-pin" data-player="child" type="button" aria-label="子のピンをドラッグ">子</button>
+				<button class="player-pin" data-player="parent" type="button" aria-label="親のピンをドラッグ" hidden><ruby>親<rt>おや</rt></ruby></button>
+				<button class="player-pin" data-player="child" type="button" aria-label="子のピンをドラッグ"><ruby>子<rt>こ</rt></ruby></button>
 			</div>
 		</section>
 
@@ -417,192 +472,279 @@
 				<button class="answer" data-choice="right" type="button"><span class="answer-label">B</span><span id="answer-right" class="answer-text"></span><span class="placed-pins" data-placement="right"></span></button>
 			</div>
 		</div>
-		<div class="answer-controls"><button id="answer-submit" class="decision-button" type="button" disabled>決定</button></div>
+		<div class="answer-controls"><button id="answer-submit" class="decision-button" type="button" disabled><ruby>決定<rt>けってい</rt></ruby></button></div>
 
-		<footer>決定後、正解と解説を確認して次へ進みます</footer>
-		<!-- Stage 3 is temporarily disabled.
-		<section id="spot-stage" class="spot-stage" aria-label="地獄の間違い探し">
-			<div class="spot-controls"><span id="spot-count" class="spot-count">背景をクリックして問題箇所に印をつけよう</span></div>
+		<section id="spot-stage" class="spot-stage" aria-label="最終ステージの問題">
+			<div class="spot-controls"><span id="spot-question-number" class="spot-question-number"></span><span id="spot-count" class="spot-count"></span></div>
 			<div class="spot-decision-row"><button id="spot-clear" class="spot-clear" type="button">クリア</button><button id="spot-confirm" class="spot-confirm" type="button" disabled>決定</button></div>
 		</section>
-		-->
 	</main>
 	<section id="final-result" aria-labelledby="final-result-title" aria-modal="true" role="dialog">
-		<p class="final-heading">QUIZ CLEAR</p>
-		<h1 id="final-result-title" class="final-title">クリア！</h1>
-		<p id="final-score" class="final-score">最終スコア 0点</p>
-		<p id="final-rank" class="final-summary">親子の称号: ひよっこ</p>
-		<p class="stage-score-note">シンクロボーナスは親子に1.5点ずつ配分（棒は共通目盛り）</p>
-		<div class="stage-score-chart" aria-label="ステージごとの親子ポイント比較">
+		<div class="final-result-content">
+		<p class="final-heading">RESULTS</p>
+		<h1 id="final-result-title" class="final-title"><ruby>結果発表<rt>けっかはっぴょう</rt></ruby></h1>
+	<section class="stage-result is-total" aria-labelledby="total-result-title">
+		<h2 id="total-result-title" class="stage-result-title"><ruby>合算結果<rt>がっさんけっか</rt></ruby></h2>
+		<p id="total-score" class="final-score"></p>
+		<p id="final-rank" class="final-summary"></p>
+		<p class="stage-score-note"><ruby>称号<rt>しょうごう</rt></ruby>は30<ruby>点<rt>てん</rt></ruby>で<ruby>最高<rt>さいこう</rt></ruby>になります</p>
+	</section>
+		<section class="stage-result" aria-labelledby="quiz-result-title">
+		<h2 id="quiz-result-title" class="stage-result-title"><ruby>第<rt>だい</rt></ruby>1ステージ</h2>
+		<p id="final-score" class="final-score">スコア 0<ruby>点<rt>てん</rt></ruby></p>
+		<p id="stage-score-note" class="stage-score-note">シンクロボーナスは<ruby>親子<rt>おやこ</rt></ruby>に1.5<ruby>点<rt>てん</rt></ruby>ずつ<ruby>配分<rt>はいぶん</rt></ruby></p>
+		<div class="stage-score-chart" aria-label="親子の合計ポイント比較">
 			<div class="stage-score-row">
-				<strong class="stage-score-name">第1ステージ</strong>
+				<strong class="stage-score-name">クイズ<ruby>全体<rt>ぜんたい</rt></ruby></strong>
 				<div class="stage-score-lanes">
-					<div class="stage-score-lane"><span class="stage-score-player">親</span><span class="stage-score-track"><span id="timed-parent-fill" class="stage-score-fill"></span></span><span id="timed-parent-value" class="stage-score-value">0点</span></div>
-					<div class="stage-score-lane child"><span class="stage-score-player">子</span><span class="stage-score-track"><span id="timed-child-fill" class="stage-score-fill"></span></span><span id="timed-child-value" class="stage-score-value">0点</span></div>
+					<div class="stage-score-lane"><span class="stage-score-player" data-player-name="parent"><ruby>親<rt>おや</rt></ruby></span><span class="stage-score-track"><span id="quiz-parent-fill" class="stage-score-fill"></span></span><span id="quiz-parent-value" class="stage-score-value">0<ruby>点<rt>てん</rt></ruby></span></div>
+					<div class="stage-score-lane child"><span class="stage-score-player" data-player-name="child"><ruby>子<rt>こ</rt></ruby></span><span class="stage-score-track"><span id="quiz-child-fill" class="stage-score-fill"></span></span><span id="quiz-child-value" class="stage-score-value">0<ruby>点<rt>てん</rt></ruby></span></div>
 				</div>
 			</div>
-			<div class="stage-score-row">
-				<strong class="stage-score-name">第2ステージ</strong>
-				<div class="stage-score-lanes">
-					<div class="stage-score-lane"><span class="stage-score-player">親</span><span class="stage-score-track"><span id="relaxed-parent-fill" class="stage-score-fill"></span></span><span id="relaxed-parent-value" class="stage-score-value">0点</span></div>
-					<div class="stage-score-lane child"><span class="stage-score-player">子</span><span class="stage-score-track"><span id="relaxed-child-fill" class="stage-score-fill"></span></span><span id="relaxed-child-value" class="stage-score-value">0点</span></div>
-				</div>
-			</div>
-			<!-- Stage 3 score is temporarily disabled.
-			<div class="stage-score-row">
-				<strong class="stage-score-name">最終ステージ</strong>
-				<div class="stage-score-lanes">
-					<div class="stage-score-lane"><span class="stage-score-player">親</span><span class="stage-score-track"><span id="spot-parent-fill" class="stage-score-fill"></span></span><span id="spot-parent-value" class="stage-score-value">0点</span></div>
-					<div class="stage-score-lane child"><span class="stage-score-player">子</span><span class="stage-score-track"><span id="spot-child-fill" class="stage-score-fill"></span></span><span id="spot-child-value" class="stage-score-value">0点</span></div>
-				</div>
-			</div>
-			-->
 		</div>
 		<div class="final-accuracy" aria-label="親子それぞれの正答率">
-			<div class="accuracy-row"><span class="accuracy-person">親</span><span class="accuracy-track"><span id="parent-accuracy-fill" class="accuracy-fill"></span></span><span id="parent-accuracy-value" class="accuracy-value">0 / 16問・0%</span></div>
-			<div class="accuracy-row child"><span class="accuracy-person child">子</span><span class="accuracy-track"><span id="child-accuracy-fill" class="accuracy-fill"></span></span><span id="child-accuracy-value" class="accuracy-value">0 / 16問・0%</span></div>
-			<div class="accuracy-row combined"><span class="accuracy-person">合算</span><span class="accuracy-track"><span id="combined-accuracy-fill" class="accuracy-fill"></span></span><span id="combined-accuracy-value" class="accuracy-value">0 / 32回答・0%</span></div>
+			<div class="accuracy-row"><span class="accuracy-person" data-player-name="parent"><ruby>親<rt>おや</rt></ruby></span><span class="accuracy-track"><span id="parent-accuracy-fill" class="accuracy-fill"></span></span><span id="parent-accuracy-value" class="accuracy-value">0 / 10<ruby>問<rt>もん</rt></ruby></span></div>
+			<div class="accuracy-row child"><span class="accuracy-person child" data-player-name="child"><ruby>子<rt>こ</rt></ruby></span><span class="accuracy-track"><span id="child-accuracy-fill" class="accuracy-fill"></span></span><span id="child-accuracy-value" class="accuracy-value">0 / 10<ruby>問<rt>もん</rt></ruby></span></div>
 		</div>
-		<button id="restart-button" class="restart-button" type="button">アンケートに答える</button>
+		</section>
+		<section class="stage-result" aria-labelledby="spot-result-title">
+			<h2 id="spot-result-title" class="stage-result-title"><ruby>最終<rt>さいしゅう</rt></ruby>ステージ</h2>
+			<p id="final-spot-score" class="final-score"></p>
+			<p id="final-spot-summary" class="final-summary"></p>
+		</section>
+		<button id="restart-button" class="restart-button" type="button">アンケートに<ruby>答<rt>こた</rt></ruby>える</button>
+		</div>
 	</section>
-	<!-- Stage 3 is temporarily disabled.
 	<section id="spot-feedback" class="spot-feedback" aria-labelledby="spot-feedback-count" aria-modal="true" role="dialog">
 		<p class="spot-feedback-title">FINAL STAGE / ANSWER CHECK</p>
 		<h2 id="spot-feedback-count" class="spot-feedback-count"></h2>
 		<p id="spot-feedback-points" class="spot-feedback-points"></p>
-		<div class="spot-feedback-image"><img src="images/03.jpg" alt="問題箇所と正解位置の風景"><div id="feedback-markers"></div></div>
+		<div class="spot-feedback-image"><img id="spot-feedback-image" src="images/02-01.png" alt="問題箇所と正解位置の風景"><div id="feedback-markers"></div></div>
 		<p class="feedback-legend">緑: 発見　赤: 見逃し</p>
-		<button id="show-results-button" class="show-results-button" type="button">結果発表へ</button>
+		<button id="show-results-button" class="show-results-button" type="button">次の問題へ</button>
 	</section>
-	-->
 	<section id="answer-screen" class="answer-screen" aria-labelledby="answer-outcome" aria-modal="true" role="dialog">
 		<div id="answer-card" class="answer-card">
-			<p id="answer-kicker" class="answer-kicker">第1ステージ・第1問</p>
-			<h2 id="answer-outcome" class="answer-outcome">正解！</h2>
-			<p id="answer-points" class="answer-points">+1点</p>
+			<p id="answer-kicker" class="answer-kicker">クイズ・<ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby></p>
+			<h2 id="answer-outcome" class="answer-outcome"><span id="child-answer-outcome" class="player-outcome"></span><span id="parent-answer-outcome" class="player-outcome"></span></h2>
+			<p id="answer-points" class="answer-points">+1<ruby>点<rt>てん</rt></ruby></p>
 			<p id="answer-correct-text" class="answer-correct-text"></p>
 			<p id="answer-explanation" class="answer-explanation"></p>
-			<button id="continue-button" class="continue-button" type="button">次の問題へ</button>
+			<button id="continue-button" class="continue-button" type="button"><ruby>次<rt>つぎ</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>へ</button>
 		</div>
 	</section>
+	<section id="spot-intro" class="answer-screen" aria-labelledby="spot-intro-title" aria-modal="true" role="dialog">
+		<div class="answer-card">
+			<p class="answer-kicker">FINAL STAGE</p>
+			<h2 id="spot-intro-title" class="answer-outcome"><span><ruby>最終<rt>さいしゅう</rt></ruby>ステージ</span></h2>
+			<p class="answer-explanation"><ruby>絵<rt>え</rt></ruby>の<ruby>中<rt>なか</rt></ruby>にある<ruby>自転車<rt>じてんしゃ</rt></ruby>の<ruby>危険<rt>きけん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby>を<ruby>探<rt>さが</rt></ruby>そう。<ruby>全部<rt>ぜんぶ</rt></ruby>で3<ruby>問<rt>もん</rt></ruby>です。
 
+<ruby>危険<rt>きけん</rt></ruby>だと<ruby>思<rt>おも</rt></ruby>う<ruby>場所<rt>ばしょ</rt></ruby>をタップして<ruby>印<rt>しるし</rt></ruby>をつけ、「<ruby>決定<rt>けってい</rt></ruby>」で<ruby>答<rt>こた</rt></ruby>え<ruby>合<rt>あ</rt></ruby>わせをします。「クリア」で<ruby>印<rt>しるし</rt></ruby>をつけ<ruby>直<rt>なお</rt></ruby>せます。
+
+<ruby>正解<rt>せいかい</rt></ruby>を1か<ruby>所<rt>しょ</rt></ruby><ruby>見<rt>み</rt></ruby>つけるごとに1<ruby>点<rt>てん</rt></ruby>です。</p>
+			<button id="start-spot-button" class="continue-button" type="button"><ruby>最終<rt>さいしゅう</rt></ruby>ステージを<ruby>始<rt>はじ</rt></ruby>める</button>
+		</div>
+	</section>
+	<div id="combo-popup" class="combo-popup" role="status" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+		<div class="combo-popup-card">
+			<p id="combo-popup-title" class="combo-popup-title"></p>
+			<p id="combo-popup-count" class="combo-popup-count"></p>
+			<p class="combo-popup-message">すごい！息ぴったり！</p>
+		</div>
+	</div>
+
+	<script src="nicknames.js"></script>
 	<script>
-		const timedQuestions = [
-			{ text: '自転車は、ふだんどこを走るのがルールですか？', left: '歩道', right: '車道の左側', correct: 'right', explanation: '自転車は車の仲間なので、ふだんは車道の左側を通るのがルールです。歩道は歩く人が安全に通るための場所です。歩道を走ることができる場合もありますが、そのときも歩行者を優先しなければなりません。まずは「自転車は車道の左側」が基本だと覚えましょう。' },
-			{ text: '自転車で走っていると、前にエンジンを切って止まっている車がありました。どうしますか？', left: '歩道でゆっくり走る', right: '右側の車道に移動して走る', correct: 'left', explanation: '止まっている車の横を車道で通ると、急にドアが開くことがあり危険です。歩道をゆっくり走れる場合は、安全をよく確かめて通りましょう。右側の車道へ移動すると、反対から来る車とぶつかる危険があります。' },
-			{ text: '「止まれ」の標識がある場所ではどうしますか？', left: 'スピードを落とし、よく確認して進む', right: '必ず止まる', correct: 'right', explanation: '「止まれ」の標識がある場所では、必ず一度止まらなければなりません。スピードを落とすだけでは不十分です。しっかり止まって、右・左・右を確認してから進むことで、事故を防ぐことができます。' },
-			{ text: '自転車に2人で乗ることは？', left: '専用の自転車であれば、小学生未満の子どもは乗せてもよい', right: 'よくないので、必ず罰金が発生する', correct: 'left', explanation: 'ふつうの自転車で二人乗りをすることはできません。しかし、子どもを乗せるための特別な自転車では、小学生未満の子どもを乗せることが認められている場合があります。二人乗りはバランスをくずしやすいので、安全に注意しましょう。' },
-			{ text: '前に横断歩道を渡る人がいました。どうしますか？', left: 'ベルを鳴らす', right: '止まって待つ', correct: 'right', explanation: '横断歩道を渡る人がいるときは、自転車も止まって待ちます。ベルを鳴らして急がせたり、どかせたりしてはいけません。道路では歩行者が優先です。相手を思いやる気持ちを大切にしましょう。' },
-			{ text: '雨の日に、かさをさしながら自転車に乗ることは？', left: 'よくない', right: '周りがしっかり見えていればよい', correct: 'left', explanation: 'かさをさしながら自転車に乗るのは危険です。片手運転になり、風でかさがあおられるとバランスをくずしてしまいます。また、前が見えにくくなることもあります。雨の日はレインコートを使いましょう。' },
-			{ text: '歩道を自転車で走っていると、前を歩行者が歩いていました。どうするのが正しいですか？', left: 'ベルを鳴らして避けてもらう', right: '邪魔になるときは立ち止まるか、自転車を押して歩く', correct: 'right', explanation: '歩道では歩行者が一番優先です。前に歩行者がいるときは、無理に追いこしたりベルを鳴らしたりせず、ゆっくり進みましょう。通れないときは止まったり、自転車を押して歩いたりすることが大切です。' },
-			{ text: 'イヤホンで音楽を聴きながら自転車に乗ることはどうですか？', left: '周りの音が聞こえない状態で乗るのはいけない', right: '音量を小さくしていればよい', correct: 'left', explanation: 'イヤホンで周りの音が聞こえない状態で自転車に乗るのは危険です。車のクラクションや踏切の音、近づいてくる人の声に気づけなくなることがあります。安全のため、周りの音をしっかり聞ける状態で乗りましょう。' },
-			{ text: '友達と一緒に自転車に乗っています。2台並んで走ることはどうですか？', left: '道路の左側であれば、並んで走ってもよい', right: '「並進可」の標識がない場所では、並んで走ってはいけない', correct: 'right', explanation: '自転車を横に並んで走ると、道路を広く使ってしまい危険です。「並進可」の標識がある場所以外では、並んで走ってはいけません。友達と一緒のときも、一列になって安全に走りましょう。' },
-			{ text: '自転車のハンドルに荷物をぶらさげてもいいですか？', left: '左右のバランスがとれていれば、ハンドルにかけて走ってもよい', right: '荷物をハンドルにぶらさげてはいけない', correct: 'right', explanation: '荷物をハンドルにぶらさげると、走っているときに揺れて危険です。荷物が車輪に巻き込まれたり、ハンドルが取られたりして転んでしまうことがあります。荷物はかごやリュックに入れて運びましょう。' },
-			{ text: '自転車に乗る前の安全点検で、問題ないブレーキの状態はどちらですか？', left: 'ブレーキレバーをにぎると途中で止まる', right: 'ブレーキレバーをにぎるとハンドルの近くで止まる', correct: 'left', explanation: 'ブレーキレバーは、にぎったときに途中で止まる状態が正常です。ハンドルの近くまでレバーがついてしまうと、ブレーキが十分にきかないおそれがあります。自転車に乗る前には、ブレーキがしっかり動くか必ず確認しましょう。' }
+		const questions = [
+			{ text: '{法律|ほうりつ}で、{自転車|じてんしゃ}は「{人|ひと}が{歩|ある}くところ」ではなく「{車|くるま}が{通|とお}るところ」を{走|はし}る{決|き}まりになるのは{何歳|なんさい}からでしょうか？', left: '13{歳|さい}', right: '16{歳|さい}', correct: 'left', explanation: '13{歳|さい}{以上|いじょう}になると、{自転車|じてんしゃ}は{車|くるま}が{通|とお}るところを{走|はし}るのが{基本|きほん}になります。\n\n{自転車|じてんしゃ}は{車|くるま}の{仲間|なかま}なので、{人|ひと}が{歩|ある}くところではなく、{車|くるま}が{通|とお}るところを{使|つか}うのが{基本|きほん}です。ただし、「{自転車|じてんしゃ}{通行可|つうこうか}」の{標識|ひょうしき}がある{場合|ばあい}などは、{人|ひと}が{歩|ある}くところを{走|はし}ることができます。ルールを{正|ただ}しく{知|し}り、{安全|あんぜん}に{自転車|じてんしゃ}に{乗|の}りましょう。' },
+			{ text: '{自転車|じてんしゃ}で{交通違反|こうつういはん}をしてしまうと、「{青切符|あおきっぷ}」をもらうことがあります。{何歳|なんさい}から{反則金|はんそくきん}を{払|はら}うことになるでしょうか？', note: '{青切符|あおきっぷ}とは、{交通違反|こうつういはん}をしたときにもらうきっぷのことで、お{金|かね}を{払|はら}う「{反則金|はんそくきん}」の{対象|たいしょう}になることがあります。', left: '16{歳|さい}', right: '18{歳|さい}', correct: 'left', explanation: '{自転車|じてんしゃ}で{交通違反|こうつういはん}をして、「{青切符|あおきっぷ}」の{対象|たいしょう}になった{場合|ばあい}は、16{歳|さい}から{反則金|はんそくきん}を{払|はら}うことがあります。\n\n{自転車|じてんしゃ}は{遊|あそ}び{道具|どうぐ}ではなく、{道路|どうろ}を{使|つか}う{乗|の}り{物|もの}です。{将来|しょうらい}、{安全|あんぜん}に{自転車|じてんしゃ}に{乗|の}るためにも、{今|いま}のうちから{交通|こうつう}ルールをしっかり{覚|おぼ}えておきましょう。' },
+			{ text: '{自転車|じてんしゃ}は、ふだんどこを{走|はし}るのがルールですか？', left: '{人|ひと}が{歩|ある}くところ', right: '{車|くるま}が{通|とお}るところの{左側|ひだりがわ}', correct: 'right', explanation: '{自転車|じてんしゃ}は{車|くるま}の{仲間|なかま}なので、ふだんは{車|くるま}が{通|とお}るところの{左側|ひだりがわ}を{通|とお}るのがルールです。\n\n{人|ひと}が{歩|ある}くところは、{歩|ある}く{人|ひと}が{安全|あんぜん}に{通|とお}るための{場所|ばしょ}です。そこを{走|はし}ることができる{場合|ばあい}もありますが、そのときも{歩|ある}いている{人|ひと}を{先|さき}に{通|とお}さなければなりません。まずは「{自転車|じてんしゃ}は{車|くるま}が{通|とお}るところの{左側|ひだりがわ}」と{覚|おぼ}えましょう。\n\n{自転車|じてんしゃ}は{遊|あそ}び{道具|どうぐ}ではなく、{道路|どうろ}を{使|つか}う{乗|の}り{物|もの}です。{将来|しょうらい}、{安全|あんぜん}に{自転車|じてんしゃ}に{乗|の}るためにも、{今|いま}のうちから{交通|こうつう}ルールをしっかり{覚|おぼ}えておきましょう。' },
+			{ text: '「{止|と}まれ」の{標識|ひょうしき}がある{場所|ばしょ}ではどうしますか？', left: 'スピードを{落|お}として、よく{確認|かくにん}して{進|すす}む', right: '{必|かなら}ず{止|と}まる', correct: 'right', explanation: '「{止|と}まれ」の{標識|ひょうしき}がある{場所|ばしょ}では、{必|かなら}ず{一度|いちど}{止|と}まらなければなりません。\n\nスピードを{落|お}とすだけでは{十分|じゅうぶん}ではありません。しっかり{止|と}まって、{右|みぎ}・{左|ひだり}・{右|みぎ}を{確認|かくにん}してから{進|すす}むことで、{事故|じこ}を{防|ふせ}ぐことができます。' },
+			{ text: '{前|まえ}に{横断歩道|おうだんほどう}をわたる{人|ひと}がいました。どうしますか？', left: 'ベルを{鳴|な}らす', right: '{止|と}まって{待|ま}つ', correct: 'right', explanation: '{横断歩道|おうだんほどう}をわたる{人|ひと}がいるときは、{自転車|じてんしゃ}も{止|と}まって{待|ま}ちます。\n\nベルを{鳴|な}らして{急|いそ}がせたり、どいてもらおうとしたりしてはいけません。{道路|どうろ}では{歩|ある}いている{人|ひと}が{先|さき}に{通|とお}ります。{相手|あいて}を{思|おも}いやる{気持|きも}ちを{大切|たいせつ}にしましょう。' },
+			{ text: '{友達|ともだち}と{一緒|いっしょ}に{自転車|じてんしゃ}に{乗|の}っています。2{台|だい}{並|なら}んで{走|はし}ることはどうですか？', left: '{道路|どうろ}の{左側|ひだりがわ}であれば、{並|なら}んで{走|はし}ってもよい', right: '「{並進可|へいしんか}」の{標識|ひょうしき}がない{場所|ばしょ}では、{並|なら}んで{走|はし}ってはいけない', correct: 'right', explanation: '{自転車|じてんしゃ}を{横|よこ}に{並|なら}んで{走|はし}ると、{道路|どうろ}を{広|ひろ}く{使|つか}ってしまい{危険|きけん}です。\n\n「{並進可|へいしんか}」の{標識|ひょうしき}がある{場所以外|ばしょいがい}では、{並|なら}んで{走|はし}ってはいけません。{友達|ともだち}と{一緒|いっしょ}のときも、{一列|いちれつ}になって{安全|あんぜん}に{走|はし}りましょう。' },
+			{ text: '{自転車|じてんしゃ}のハンドルに{荷物|にもつ}をぶらさげてもいいですか？', left: '{左右|さゆう}のバランスがとれていれば、ハンドルにかけて{走|はし}ってもよい', right: '{荷物|にもつ}をハンドルにぶらさげてはいけない', correct: 'right', explanation: '{荷物|にもつ}をハンドルにぶらさげると、{走|はし}っているときに{揺|ゆ}れて{危険|きけん}です。\n\n{荷物|にもつ}が{車輪|しゃりん}に{巻|ま}き{込|こ}まれたり、ハンドルを{取|と}られたりして、{転|ころ}んでしまうことがあります。{荷物|にもつ}は、かごやリュックに{入|い}れて{運|はこ}びましょう。' },
+			{ text: '{自転車|じてんしゃ}に{乗|の}る{前|まえ}の{安全点検|あんぜんてんけん}のとき、{問題|もんだい}がない{状態|じょうたい}はどちらですか？', left: 'ブレーキレバーをにぎると{途中|とちゅう}で{止|と}まる', right: 'ブレーキレバーをにぎるとハンドルの{近|ちか}くで{止|と}まる', correct: 'left', explanation: 'ブレーキレバーは、にぎったときに{途中|とちゅう}で{止|と}まる{状態|じょうたい}が{正常|せいじょう}です。\n\nハンドルの{近|ちか}くまでレバーがついてしまうと、ブレーキが{十分|じゅうぶん}にきかないおそれがあります。{自転車|じてんしゃ}に{乗|の}る{前|まえ}には、ブレーキがしっかり{動|うご}くか{必|かなら}ず{確認|かくにん}しましょう。' },
+			{ text: '{自転車|じてんしゃ}は「{車|くるま}が{通|とお}るところの{左側|ひだりがわ}」を{走|はし}るのが{基本|きほん}ですが、{人|ひと}が{歩|ある}くところを{走|はし}ってもよいときがあります。それはどんなときですか？', left: '「{自転車|じてんしゃ}{通行可|つうこうか}」の{標識|ひょうしき}があるとき', right: '{天気|てんき}が{悪|わる}くて{見|み}えにくいとき', correct: 'left', explanation: '{自転車|じてんしゃ}は{基本的|きほんてき}に{車|くるま}が{通|とお}るところを{走|はし}りますが、「{自転車|じてんしゃ}{通行可|つうこうか}」の{標識|ひょうしき}がある{場所|ばしょ}では、{人|ひと}が{歩|ある}くところを{走|はし}ることができます。\n\n{天気|てんき}が{悪|わる}いことだけを{理由|りゆう}に、{人|ひと}が{歩|ある}くところを{走|はし}ってよいわけではありません。そこを{走|はし}るときは、{歩|ある}いている{人|ひと}を{先|さき}に{通|とお}しましょう。' },
+			{ text: '{人|ひと}が{歩|ある}くところを{自転車|じてんしゃ}で{走|はし}ってもよい{場所|ばしょ}では、どこを{走|はし}らなければいけませんか？', left: '{車|くるま}が{通|とお}るところに{近|ちか}いほう', right: '{建物|たてもの}に{近|ちか}いほう', correct: 'left', explanation: '{人|ひと}が{歩|ある}くところを{走|はし}ることができる{場合|ばあい}は、{車|くるま}が{通|とお}るところに{近|ちか}い{側|がわ}をゆっくり{走|はし}るのがルールです。\n\n{建物|たてもの}に{近|ちか}い{側|がわ}は、{歩|ある}いている{人|ひと}が{通|とお}る{場所|ばしょ}です。{人|ひと}が{歩|ある}くところでは、{歩|ある}いている{人|ひと}が{先|さき}に{通|とお}ります。{安全|あんぜん}な{速|はや}さで{走|はし}りましょう。' }
 		];
-		const relaxedQuestions = [
-			{ text: '自転車に乗っていて、赤信号を無視して進んでしまいました。これは犯罪や罰金の対象になるでしょうか？', left: '自転車だから、注意されるだけで罰金などは発生しない', right: '罰金を払うことになる場合がある', correct: 'right', explanation: '赤信号を無視することは、罰則や罰金の対象になります。自転車も道路を走る車の仲間なので、信号を守らなければなりません。信号を無視して交差点に飛び出すと、歩行者とぶつかる危険があり、自分だけでなく歩行者にけがをさせてしまうこともあります。' },
-			{ text: '自転車で交通違反をして青切符の対象になった場合、何歳から反則金を支払うことがありますか？', left: '16歳', right: '18歳', correct: 'left', explanation: '自転車で交通違反をして「青切符」の対象になった場合は、16歳から反則金を支払うことがあります。自転車は遊び道具ではなく、道路を利用する乗り物です。将来も安全に利用するため、今のうちから交通ルールをしっかり覚えておきましょう。' },
-			{ text: '自転車は車道の左側を走るのが原則ですが、歩道を走ってもよいのはどんなときですか？', left: '「自転車通行可」の標識があるとき', right: '天気が悪くて見えにくいとき', correct: 'left', explanation: '自転車は基本的に車道を走りますが、「自転車通行可」の標識がある場所では歩道を走ることができます。天気が悪いことだけを理由に歩道を走ってよいわけではありません。歩道を走るときは、歩行者を優先しましょう。' },
-			{ text: '歩道を自転車で走ってもよい場所では、歩道のどこを走りますか？', left: '車道に近いほう', right: '建物に近いほう', correct: 'left', explanation: '歩道を走ることができる場合は、車道に近い側をゆっくり走るのがルールです。建物に近い側は歩行者が通る場所です。歩道では歩行者が優先なので、安全な速度で走りましょう。' },
-			{ text: '自転車は歩道ではなく車道を走るのが原則になるのは、何歳からですか？', left: '13歳', right: '16歳', correct: 'left', explanation: '13歳以上になると、自転車は車道を走ることが原則になります。ただし、「自転車通行可」の標識がある場合などは歩道を走ることができます。ルールを正しく知り、安全に自転車を利用しましょう。' }
-		];
-		const timerLimit = 20;
 		const surface = document.querySelector('#touch-surface');
 		const status = document.querySelector('#status');
+		const turnLabel = document.querySelector('#turn-label');
 		const statusText = document.querySelector('#status-text');
 		const questionNumber = document.querySelector('#question-number');
 		const questionText = document.querySelector('#question');
-		const timerBox = document.querySelector('#timer-box');
-		const timerValue = document.querySelector('#timer-value');
-		const timerFill = document.querySelector('#timer-fill');
 		const main = document.querySelector('main');
 		const rankName = document.querySelector('#rank-name');
 		const rankFill = document.querySelector('#rank-fill');
 		const rankTrack = document.querySelector('.rank-track');
 		const rankNext = document.querySelector('#rank-next');
-		const finalResultTitle = document.querySelector('#final-result-title');
 		const finalScore = document.querySelector('#final-score');
 		const finalRank = document.querySelector('#final-rank');
 		const parentAccuracyFill = document.querySelector('#parent-accuracy-fill');
 		const childAccuracyFill = document.querySelector('#child-accuracy-fill');
-		const combinedAccuracyFill = document.querySelector('#combined-accuracy-fill');
 		const parentAccuracyValue = document.querySelector('#parent-accuracy-value');
 		const childAccuracyValue = document.querySelector('#child-accuracy-value');
-		const combinedAccuracyValue = document.querySelector('#combined-accuracy-value');
 		const restartButton = document.querySelector('#restart-button');
 		const answerSubmit = document.querySelector('#answer-submit');
 		const pinInstructions = document.querySelector('#pin-instructions');
+		const pinGuidance = document.querySelector('#pin-guidance');
+		const pinGuidancePaths = [...pinGuidance.querySelectorAll('path[data-arrow]')];
 		const answerScreen = document.querySelector('#answer-screen');
 		const answerCard = document.querySelector('#answer-card');
 		const answerKicker = document.querySelector('#answer-kicker');
 		const answerOutcome = document.querySelector('#answer-outcome');
+		const childAnswerOutcome = document.querySelector('#child-answer-outcome');
+		const parentAnswerOutcome = document.querySelector('#parent-answer-outcome');
 		const answerPoints = document.querySelector('#answer-points');
 		const answerCorrectText = document.querySelector('#answer-correct-text');
 		const answerExplanation = document.querySelector('#answer-explanation');
 		const continueButton = document.querySelector('#continue-button');
+		const spotIntro = document.querySelector('#spot-intro');
+		const startSpotButton = document.querySelector('#start-spot-button');
+		const comboPopup = document.querySelector('#combo-popup');
+		const comboPopupTitle = document.querySelector('#combo-popup-title');
+		const comboPopupCount = document.querySelector('#combo-popup-count');
+		const spotBackgroundImage = document.querySelector('#spot-background-image');
+		const spotQuestionImage = document.querySelector('#spot-question-image');
+		const spotFeedbackImage = document.querySelector('#spot-feedback-image');
+		const spotStage = document.querySelector('#spot-stage');
+		const spotCount = document.querySelector('#spot-count');
+		const spotConfirm = document.querySelector('#spot-confirm');
+		const spotFeedback = document.querySelector('#spot-feedback');
+		const feedbackMarkers = document.querySelector('#feedback-markers');
+		const showResultsButton = document.querySelector('#show-results-button');
+		const spotQuestions = [
+			{ image: 'images/02-01.png', targets: [{ x: 78, y: 31 }, { x: 28, y: 36 }] },
+			{ image: 'images/02-02.png', targets: [{ x: 39, y: 41 }] },
+			{ image: 'images/02-03.png', targets: [{ x: 19, y: 43 }, { x: 48, y: 52 }, { x: 86, y: 29 }] }
+		];
+		const spotMaxScore = spotQuestions.reduce((total, question) => total + question.targets.length, 0);
+		const spotPrompt = '危険なところをタップしてしるしをつけよう';
 		const answerButtons = [...document.querySelectorAll('.answer')];
 		const pinButtons = [...document.querySelectorAll('.player-pin')];
+		const defaultPlayerNames = { parent: '親', child: '子' };
+		const playerNames = { ...defaultPlayerNames };
+		try {
+			const saved = sessionStorage.getItem('bikeQuizPlayerNames');
+			if (saved !== null) {
+				const names = JSON.parse(saved);
+				if (!names || typeof names.parent !== 'string' || typeof names.child !== 'string') throw new Error('Invalid saved player names');
+				if (nicknameByteLength(names.parent) > nicknameByteLimit || nicknameByteLength(names.child) > nicknameByteLimit) throw new Error('Saved nickname exceeds limit');
+				playerNames.parent = names.parent.trim() || defaultPlayerNames.parent;
+				playerNames.child = names.child.trim() || defaultPlayerNames.child;
+			}
+		} catch (error) {
+			console.error('ニックネームの読み込みに失敗しました。', error);
+			document.querySelector('#name-load-error').hidden = false;
+		}
 		const playerChoices = { parent: null, child: null };
 		const playerStats = {
 			parent: { correct: 0 },
 			child: { correct: 0 }
 		};
-		const stagePoints = {
-			timed: { parent: 0, child: 0 },
-			relaxed: { parent: 0, child: 0 }
-		};
-		let phase = 'timed';
+		const quizPoints = { parent: 0, child: 0 };
 		let questionIndex = 0;
 		let score = 0;
 		let judged = false;
-		let timerRemaining = timerLimit;
-		let timerId = null;
-		let nextQuestionId = null;
+		let turn = 'child';
+		let consecutiveBothCorrect = 0;
+		let comboPopupTimer;
 		let draggedPin = null;
+		let pinPlaceholder = null;
+		let spotQuestionIndex = 0;
+		let spotMarks = [];
+		let spotScore = 0;
+
+		function fitQuizScreen() {
+			if (main.classList.contains('phase-spot') || draggedPin) return;
+			const scale = Math.min(1, (window.innerHeight - 1) / main.offsetHeight);
+			main.style.setProperty('--quiz-scale', scale);
+			updatePinGuidance();
+		}
+
+		function fitOverlayContent(container, content) {
+			if (!container.classList.contains('is-visible')) return;
+			const style = getComputedStyle(container);
+			const width = container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+			const height = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+			const scale = Math.min(1, width / content.offsetWidth, (height - 1) / content.offsetHeight);
+			content.style.transform = `scale(${scale})`;
+		}
+
+		function fitVisibleScreens() {
+			fitQuizScreen();
+			fitOverlayContent(answerScreen, answerCard);
+			fitOverlayContent(spotIntro, spotIntro.querySelector('.answer-card'));
+			const finalResult = document.querySelector('#final-result');
+			fitOverlayContent(finalResult, finalResult.querySelector('.final-result-content'));
+		}
 
 		function updateWorld() {
-			const backgroundClass = phase === 'relaxed' ? 'stage-forest' : 'stage-swamp';
-			document.body.className = `phase-${phase} ${backgroundClass}`;
-			main.classList.toggle('phase-timed', phase === 'timed');
+			document.body.className = 'stage-forest';
+			document.body.style.setProperty('--question-background', `url("images/Q${questionIndex + 1}.jpg")`);
+		}
+
+		function getRanks() {
+			const maxScore = questions.length * 3;
+			return ['ひよっこ', 'かけだし', '{一人前|いちにんまえ}', '{上級|じょうきゅう}', '{達人|たつじん}', '{名人|めいじん}', '{極|きわみ}', '{神|かみ}'].map((name, index) => ({ min: Math.ceil(maxScore * index / 7), name }));
 		}
 
 		function updateRank() {
-			const maxScore = (timedQuestions.length + relaxedQuestions.length) * 3;
-			const ranks = ['ひよっこ', 'かけだし', '一人前', '上級', '達人', '名人', '極', '神'].map((name, index) => ({ min: Math.ceil(maxScore * index / 7), name }));
+			const maxScore = questions.length * 3;
+			const ranks = getRanks();
 			const currentRankIndex = [...ranks].reverse().findIndex((rank) => score >= rank.min);
 			const currentRank = ranks[ranks.length - 1 - currentRankIndex];
 			const nextRank = ranks[ranks.indexOf(currentRank) + 1];
-			rankName.textContent = currentRank.name;
+			renderFurigana(rankName, currentRank.name);
 			rankFill.style.width = `${score / maxScore * 100}%`;
 			rankTrack.setAttribute('aria-valuenow', score);
-			rankNext.textContent = nextRank ? `次の称号「${nextRank.name}」まであと${nextRank.min - score}点` : '最高称号「神」に到達';
+			rankTrack.setAttribute('aria-valuemax', maxScore);
+			renderFurigana(rankNext, nextRank ? `{次|つぎ}の{称号|しょうごう}「${nextRank.name}」まであと${nextRank.min - score}{点|てん}` : '{最高称号|さいこうしょうごう}「{神|かみ}」に{到達|とうたつ}');
 		}
 
-		function currentQuestions() {
-			return phase === 'timed' ? timedQuestions : relaxedQuestions;
-		}
-
-		function clearTimers() {
-			window.clearInterval(timerId);
-			window.clearTimeout(nextQuestionId);
-			timerId = null;
-			nextQuestionId = null;
+		function renderFurigana(element, text) {
+			const fragment = document.createDocumentFragment();
+			const pattern = /\{\{(parent|child)\}\}|\{([^{}|]+)\|([^{}|]+)\}/g;
+			let lastIndex = 0;
+			for (const match of text.matchAll(pattern)) {
+				fragment.append(document.createTextNode(text.slice(lastIndex, match.index)));
+				const player = match[1];
+				const base = player ? playerNames[player] : match[2];
+				const pronunciation = player ? (base === defaultPlayerNames[player] ? (player === 'parent' ? 'おや' : 'こ') : null) : match[3];
+				if (pronunciation) {
+					const ruby = document.createElement('ruby');
+					ruby.append(document.createTextNode(base));
+					const reading = document.createElement('rt');
+					reading.textContent = pronunciation;
+					ruby.append(reading);
+					fragment.append(ruby);
+				} else {
+					fragment.append(document.createTextNode(base));
+				}
+				lastIndex = match.index + match[0].length;
+			}
+			fragment.append(document.createTextNode(text.slice(lastIndex)));
+			element.replaceChildren(fragment);
 		}
 
 		function setQuestion() {
-			clearTimers();
-			const questions = currentQuestions();
 			const current = questions[questionIndex];
+			updateWorld();
 			answerScreen.classList.remove('is-visible');
-			timerBox.hidden = phase !== 'timed';
-			questionNumber.textContent = `${phase === 'timed' ? 'STAGE 1' : 'STAGE 2'}  第${questionIndex + 1}問 / ${questions.length}問`;
-			questionText.textContent = current.text;
-			document.querySelector('#answer-left').textContent = current.left;
-			document.querySelector('#answer-right').textContent = current.right;
+			renderFurigana(questionNumber, `クイズ  {第|だい}${questionIndex + 1}{問|もん} / ${questions.length}{問|もん}`);
+			renderFurigana(questionText, current.text);
+			if (current.note) {
+				const note = document.createElement('small');
+				note.className = 'question-note';
+				renderFurigana(note, `※${current.note}`);
+				questionText.append(note);
+			}
+			renderFurigana(document.querySelector('#answer-left'), current.left);
+			renderFurigana(document.querySelector('#answer-right'), current.right);
 			restartButton.classList.remove('is-visible');
 			playerChoices.parent = null;
 			playerChoices.child = null;
+			turn = 'child';
 			answerSubmit.disabled = true;
 			judged = false;
 			answerButtons.forEach((button) => {
@@ -614,71 +756,92 @@
 				button.style.left = '';
 				button.style.top = '';
 			});
-			pinInstructions.textContent = '親・子のピンをAかBへ移動';
-			statusText.textContent = '親と子の回答を待っています';
 			render();
-			if (phase === 'timed') startTimer();
-		}
-
-		function startTimer() {
-			timerRemaining = timerLimit;
-			timerValue.textContent = `${timerRemaining}秒`;
-			timerFill.style.width = '100%';
-			timerFill.classList.remove('low');
-			timerId = window.setInterval(() => {
-				timerRemaining -= 1;
-				timerValue.textContent = `${timerRemaining}秒`;
-				timerFill.style.width = `${timerRemaining / timerLimit * 100}%`;
-				if (timerRemaining <= 5) timerFill.classList.add('low');
-				if (timerRemaining <= 0) finishQuizQuestion([], true);
-			}, 1000);
 		}
 
 		function render() {
 			answerButtons.forEach((button) => {
 				const placement = button.querySelector('.placed-pins');
 				placement.replaceChildren();
-				button.classList.toggle('selected', Object.values(playerChoices).includes(button.dataset.choice));
-				for (const [player, choice] of Object.entries(playerChoices)) {
-					if (choice !== button.dataset.choice) continue;
+				const selected = playerChoices[turn] === button.dataset.choice;
+				button.classList.toggle('selected', selected);
+				if (selected) {
 					const marker = document.createElement('span');
-					marker.className = `placed-pin${player === 'child' ? ' child' : ''}`;
-					marker.textContent = player === 'parent' ? '親' : '子';
+					marker.className = `placed-pin${turn === 'child' ? ' child' : ''}`;
+					renderFurigana(marker, `{{${turn}}}`);
 					placement.append(marker);
 				}
 			});
 			const placedCount = Object.values(playerChoices).filter(Boolean).length;
-			answerSubmit.disabled = placedCount !== 2 || judged;
+			status.dataset.turn = turn;
+			renderFurigana(turnLabel, `{{${turn}}}のターン`);
+			pinButtons.forEach((pin) => {
+				pin.hidden = pin.dataset.player !== turn;
+			});
+			answerSubmit.disabled = !playerChoices[turn] || judged;
 			status.className = `status${placedCount === 1 ? ' is-ready' : ''}${placedCount === 2 ? ' is-two' : ''}`;
-			if (placedCount === 0) {
-				pinInstructions.textContent = '親・子のピンをAかBへ移動';
-				statusText.textContent = '親と子の回答を待っています';
-			} else if (placedCount === 1) {
-				const remaining = playerChoices.parent ? '子' : '親';
-				pinInstructions.textContent = `${remaining}のピンも選んでください`;
-				statusText.textContent = `${remaining}の回答を待っています`;
+			if (turn === 'child') {
+				renderFurigana(pinInstructions, playerChoices.child ? '{{child}}の{回答|かいとう}を{確認|かくにん}して「{決定|けってい}」を{押|お}してください' : '{{child}}の{番|ばん}です。{{child}}のコインをAかBへ{移動|いどう}してください。');
+				statusText.textContent = playerChoices.child ? `${playerNames.child}の回答を確認してください` : `${playerNames.child}の回答を待っています`;
+			} else if (!playerChoices.parent) {
+				renderFurigana(pinInstructions, '{{parent}}の{番|ばん}です。{{parent}}のコインをAかBへ{移動|いどう}');
+				statusText.textContent = `${playerNames.parent}の回答を待っています`;
 			} else {
-				pinInstructions.textContent = '回答を確認して「決定」を押してください';
+				renderFurigana(pinInstructions, '{回答|かいとう}を{確認|かくにん}して「{決定|けってい}」を{押|お}してください');
 				statusText.textContent = '2人の回答がそろいました';
-				if (phase === 'timed' && !judged) submitAnswers();
 			}
+			updatePinGuidance();
+		}
+
+		function updatePinGuidance() {
+			const activePin = pinButtons.find((pin) => pin.dataset.player === turn && !pin.hidden);
+			const visible = activePin && !judged && !playerChoices[turn] && !main.classList.contains('phase-spot');
+			pinGuidance.classList.toggle('is-visible', Boolean(visible));
+			if (!visible) return;
+
+			pinGuidance.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+			const pinRect = activePin.getBoundingClientRect();
+			const centerX = pinRect.left + pinRect.width / 2;
+			const shaftHalfWidth = 7;
+			const headHalfWidth = 15;
+			const length = 47;
+			const shaftEnd = 29;
+			const y = pinRect.bottom + headHalfWidth * Math.cos(Math.PI / 6) + 3;
+			pinGuidancePaths.forEach((path, index) => {
+				const x = centerX + (index === 0 ? -1 : 1) * pinRect.width * .22;
+				const angle = index === 0 ? 150 : 30;
+				path.setAttribute('d', `M 0 ${-shaftHalfWidth} L ${shaftEnd} ${-shaftHalfWidth} L ${shaftEnd} ${-headHalfWidth} L ${length} 0 L ${shaftEnd} ${headHalfWidth} L ${shaftEnd} ${shaftHalfWidth} L 0 ${shaftHalfWidth} Z`);
+				path.setAttribute('transform', `translate(${x} ${y}) rotate(${angle})`);
+			});
 		}
 
 		function startPinDrag(event) {
 			if (judged) return;
 			event.preventDefault();
 			draggedPin = event.currentTarget;
+			pinPlaceholder = document.createElement('span');
+			pinPlaceholder.style.width = `${draggedPin.offsetWidth}px`;
+			pinPlaceholder.style.height = `${draggedPin.offsetHeight}px`;
+			pinPlaceholder.style.flexShrink = '0';
+			pinPlaceholder.setAttribute('aria-hidden', 'true');
+			draggedPin.parentElement.insertBefore(pinPlaceholder, draggedPin);
 			draggedPin.classList.add('is-dragging');
-			draggedPin.style.left = `${event.clientX}px`;
-			draggedPin.style.top = `${event.clientY}px`;
+			positionDraggedPin(event);
+			pinGuidance.classList.remove('is-visible');
 			if (event.isTrusted) draggedPin.setPointerCapture(event.pointerId);
 		}
 
 		function movePinDrag(event) {
 			if (draggedPin !== event.currentTarget) return;
 			event.preventDefault();
-			draggedPin.style.left = `${event.clientX}px`;
-			draggedPin.style.top = `${event.clientY}px`;
+			positionDraggedPin(event);
+		}
+
+		function positionDraggedPin(event) {
+			const rect = main.getBoundingClientRect();
+			const scale = rect.width / main.offsetWidth;
+			draggedPin.style.left = `${(event.clientX - rect.left) / scale}px`;
+			draggedPin.style.top = `${(event.clientY - rect.top) / scale}px`;
 		}
 
 		function endPinDrag(event) {
@@ -691,89 +854,207 @@
 			draggedPin.style.left = '';
 			draggedPin.style.top = '';
 			draggedPin = null;
+			pinPlaceholder.remove();
+			pinPlaceholder = null;
 			render();
+			fitQuizScreen();
 		}
 
 		function submitAnswers() {
 			if (answerSubmit.disabled || judged) return;
+			if (turn === 'child') {
+				turn = 'parent';
+				render();
+				return;
+			}
 			finishQuizQuestion([
 				{ choice: playerChoices.parent },
 				{ choice: playerChoices.child }
-			], false);
+			]);
 		}
 
-		function finishQuizQuestion(touches, timedOut) {
+		function finishQuizQuestion(touches) {
 			if (judged) return;
 			judged = true;
 			answerSubmit.disabled = true;
-			window.clearInterval(timerId);
-			const correctChoice = currentQuestions()[questionIndex].correct;
+			const correctChoice = questions[questionIndex].correct;
 			const correctCount = touches.filter((touch) => touch.choice === correctChoice).length;
-			const bonus = !timedOut && correctCount === 2 && touches[0].choice === touches[1].choice;
-			const points = timedOut ? 0 : bonus ? 3 : correctCount > 0 ? 1 : 0;
-			playerStats.parent.correct += !timedOut && touches[0]?.choice === correctChoice ? 1 : 0;
-			playerStats.child.correct += !timedOut && touches[1]?.choice === correctChoice ? 1 : 0;
-			if (!timedOut) {
-				const stageScore = stagePoints[phase];
-				stageScore.parent += touches[0]?.choice === correctChoice ? 1 : 0;
-				stageScore.child += touches[1]?.choice === correctChoice ? 1 : 0;
-				if (bonus) {
-					stageScore.parent += .5;
-					stageScore.child += .5;
-				}
+			const bonus = correctCount === 2 && touches[0].choice === touches[1].choice;
+			const points = bonus ? 3 : correctCount > 0 ? 1 : 0;
+			const parentCorrect = touches[0]?.choice === correctChoice;
+			const childCorrect = touches[1]?.choice === correctChoice;
+			consecutiveBothCorrect = parentCorrect && childCorrect ? consecutiveBothCorrect + 1 : 0;
+			playerStats.parent.correct += parentCorrect ? 1 : 0;
+			playerStats.child.correct += childCorrect ? 1 : 0;
+			quizPoints.parent += parentCorrect ? 1 : 0;
+			quizPoints.child += childCorrect ? 1 : 0;
+			if (bonus) {
+				quizPoints.parent += .5;
+				quizPoints.child += .5;
 			}
 			score += points;
 			updateRank();
-			if (!timedOut) answerButtons.forEach((button) => button.classList.add(button.dataset.choice === correctChoice ? 'correct' : 'wrong'));
-			const question = currentQuestions()[questionIndex];
-			answerKicker.textContent = `${phase === 'timed' ? '第1ステージ' : '第2ステージ'}・第${questionIndex + 1}問`;
-			answerCard.classList.toggle('is-correct', correctCount > 0 && !timedOut);
-			answerCard.classList.toggle('is-wrong', correctCount === 0 || timedOut);
-			answerOutcome.textContent = timedOut ? '時間切れ' : bonus ? 'シンクロボーナス！' : correctCount > 0 ? '正解！' : '不正解';
-			answerPoints.textContent = timedOut ? '0点' : `+${points}点`;
-			answerCorrectText.textContent = `正解: ${question[correctChoice]}`;
-			answerExplanation.textContent = timedOut ? `時間内に回答できなかったため0点です。${question.explanation}` : question.explanation;
-			continueButton.textContent = questionIndex + 1 < currentQuestions().length ? '次の問題へ' : phase === 'timed' ? '第2ステージへ' : 'クリア画面へ';
-			pinInstructions.textContent = timedOut ? '時間切れ' : '回答を判定しました';
-			statusText.textContent = timedOut ? '時間切れ' : bonus ? 'シンクロボーナス' : correctCount > 0 ? '正解' : '不正解';
+			answerButtons.forEach((button) => button.classList.add(button.dataset.choice === correctChoice ? 'correct' : 'wrong'));
+			const question = questions[questionIndex];
+			renderFurigana(answerKicker, `クイズ・{第|だい}${questionIndex + 1}{問|もん}`);
+			answerCard.classList.toggle('is-correct', correctCount > 0);
+			answerCard.classList.toggle('is-wrong', correctCount === 0);
+			renderFurigana(childAnswerOutcome, '{{child}} {正解|せいかい}！');
+			childAnswerOutcome.className = 'player-outcome is-correct';
+			renderFurigana(parentAnswerOutcome, '{{parent}} {正解|せいかい}！');
+			parentAnswerOutcome.className = 'player-outcome is-correct';
+			answerOutcome.replaceChildren();
+			if (childCorrect) answerOutcome.append(childAnswerOutcome);
+			if (parentCorrect) answerOutcome.append(parentAnswerOutcome);
+			if (correctCount === 0) renderFurigana(answerOutcome, '{不正解|ふせいかい}');
+			renderFurigana(answerPoints, `+${points}{点|てん}`);
+			renderFurigana(answerCorrectText, `{正解|せいかい}: ${correctChoice === 'left' ? 'A' : 'B'} ${question[correctChoice]}`);
+			renderFurigana(answerExplanation, question.explanation);
+			renderFurigana(continueButton, questionIndex + 1 < questions.length ? '{次|つぎ}の{問題|もんだい}へ' : '{最終|さいしゅう}ステージへ');
+			renderFurigana(pinInstructions, '{回答|かいとう}を{判定|はんてい}しました');
+			statusText.textContent = [
+				childCorrect ? `${playerNames.child}正解` : '',
+				parentCorrect ? `${playerNames.parent}正解` : ''
+			].filter(Boolean).join('、') || '不正解';
 			answerScreen.classList.add('is-visible');
+			fitOverlayContent(answerScreen, answerCard);
+			if (consecutiveBothCorrect >= 2) showComboPopup();
+		}
+
+		function showComboPopup() {
+			clearTimeout(comboPopupTimer);
+			renderFurigana(comboPopupTitle, '{{child}}と{{parent}}で{連続|れんぞく}{正解|せいかい}！');
+			comboPopupCount.textContent = `${consecutiveBothCorrect} COMBO`;
+			comboPopup.setAttribute('aria-hidden', 'false');
+			comboPopup.classList.remove('is-visible');
+			void comboPopup.offsetWidth;
+			comboPopup.classList.add('is-visible');
+			comboPopupTimer = setTimeout(() => {
+				comboPopup.classList.remove('is-visible');
+				comboPopup.setAttribute('aria-hidden', 'true');
+			}, 1800);
 		}
 
 		function continueAfterAnswer() {
+			clearTimeout(comboPopupTimer);
+			comboPopup.classList.remove('is-visible');
+			comboPopup.setAttribute('aria-hidden', 'true');
 			answerScreen.classList.remove('is-visible');
 			advanceQuiz();
 		}
 
 		function advanceQuiz() {
-			if (questionIndex + 1 < currentQuestions().length) {
+			if (questionIndex + 1 < questions.length) {
 				questionIndex += 1;
 				setQuestion();
 				return;
 			}
-			if (phase === 'timed') {
-				phase = 'relaxed';
-				questionIndex = 0;
-				updateWorld();
-				setQuestion();
+			spotIntro.classList.add('is-visible');
+			fitOverlayContent(spotIntro, spotIntro.querySelector('.answer-card'));
+			startSpotButton.focus();
+		}
+
+		function startSpotStage() {
+			spotIntro.classList.remove('is-visible');
+			document.body.className = 'phase-spot stage-meadow';
+			main.classList.add('phase-spot');
+			spotStage.classList.add('is-visible');
+			pinGuidance.classList.remove('is-visible');
+			updateSpotQuestion();
+		}
+
+		function getSpotImageLayout() {
+			const rect = spotBackgroundImage.getBoundingClientRect();
+			const scale = Math.min(rect.width / spotQuestionImage.naturalWidth, rect.height / spotQuestionImage.naturalHeight);
+			const width = spotQuestionImage.naturalWidth * scale;
+			const height = spotQuestionImage.naturalHeight * scale;
+			return { rect, width, height, left: (rect.width - width) / 2, top: (rect.height - height) / 2 };
+		}
+
+		function renderSpotMarkers() {
+			spotBackgroundImage.querySelectorAll('.spot-marker').forEach((marker) => marker.remove());
+			if (!spotQuestionImage.naturalWidth || !spotQuestionImage.naturalHeight) return;
+			const layout = getSpotImageLayout();
+			spotMarks.forEach((mark, index) => {
+				const marker = document.createElement('span');
+				marker.className = 'spot-marker';
+				marker.style.left = `${(mark.x * layout.width / 100 + layout.left) / layout.rect.width * 100}%`;
+				marker.style.top = `${(mark.y * layout.height / 100 + layout.top) / layout.rect.height * 100}%`;
+				marker.textContent = String(index + 1);
+				spotBackgroundImage.appendChild(marker);
+			});
+		}
+
+		function updateSpotQuestion() {
+			const question = spotQuestions[spotQuestionIndex];
+			spotMarks = [];
+			renderSpotMarkers();
+			spotQuestionImage.src = question.image;
+			spotFeedbackImage.src = question.image;
+			document.querySelector('#spot-question-number').textContent = `第${spotQuestionIndex + 1}問`;
+			spotCount.textContent = spotPrompt;
+			spotConfirm.disabled = true;
+			showResultsButton.textContent = spotQuestionIndex === spotQuestions.length - 1 ? '結果発表へ' : '次の問題へ';
+		}
+
+		function addSpotMarker(event) {
+			if (!spotQuestionImage.complete || !spotQuestionImage.naturalWidth || spotMarks.length >= spotQuestions[spotQuestionIndex].targets.length) return;
+			const layout = getSpotImageLayout();
+			const x = (event.clientX - layout.rect.left - layout.left) / layout.width * 100;
+			const y = (event.clientY - layout.rect.top - layout.top) / layout.height * 100;
+			if (x < 0 || x > 100 || y < 0 || y > 100) return;
+			spotMarks.push({ x, y });
+			renderSpotMarkers();
+			spotCount.textContent = `印をつけた数: ${spotMarks.length} / ${spotQuestions[spotQuestionIndex].targets.length}`;
+			spotConfirm.disabled = false;
+		}
+
+		function finalizeSpotQuestion() {
+			if (spotMarks.length === 0 || spotFeedback.classList.contains('is-visible')) return;
+			const question = spotQuestions[spotQuestionIndex];
+			const isFound = (target) => spotMarks.some((mark) => Math.abs(mark.x - target.x) < 10 && Math.abs(mark.y - target.y) < 10);
+			const foundCount = question.targets.filter(isFound).length;
+			spotScore += foundCount;
+			document.querySelector('#spot-feedback-count').textContent = foundCount ? '正解！' : '見逃した場所があります';
+			document.querySelector('#spot-feedback-points').textContent = `第${spotQuestionIndex + 1}問: +${foundCount}点`;
+			feedbackMarkers.replaceChildren();
+			question.targets.forEach((target) => {
+				const marker = document.createElement('span');
+				marker.className = `feedback-marker${isFound(target) ? ' found' : ''}`;
+				marker.style.left = `${target.x}%`;
+				marker.style.top = `${target.y}%`;
+				marker.textContent = '●';
+				feedbackMarkers.appendChild(marker);
+			});
+			spotFeedback.classList.add('is-visible');
+		}
+
+		function continueAfterSpot() {
+			spotFeedback.classList.remove('is-visible');
+			if (spotQuestionIndex + 1 < spotQuestions.length) {
+				spotQuestionIndex += 1;
+				updateSpotQuestion();
 				return;
 			}
-			finalResultTitle.textContent = 'クリア！';
-			finalScore.textContent = `最終スコア ${score}点`;
-			finalRank.textContent = `親子の称号: ${rankName.textContent}`;
+			renderFurigana(finalScore, `スコア ${score}{点|てん}`);
+			const totalScore = score + spotScore;
+			const totalRank = [...getRanks()].reverse().find((rank) => totalScore >= rank.min);
+			renderFurigana(document.querySelector('#total-score'), `スコア ${totalScore} / ${questions.length * 3 + spotMaxScore}{点|てん}`);
+			renderFurigana(finalRank, `{{parent}}と{{child}}の{称号|しょうごう}: ${totalRank.name}`);
+			renderFurigana(document.querySelector('#final-spot-score'), `スコア ${spotScore} / ${spotMaxScore}{点|てん}`);
+			renderFurigana(document.querySelector('#final-spot-summary'), `${spotMaxScore}か{所|しょ}{中|ちゅう} ${spotScore}か{所|しょ}{見|み}つけました！`);
 			updateStageScoreGraph();
 			updateAccuracyGraph();
 			showFinalResults();
 		}
 
 		function updateStageScoreGraph() {
-			const commonScale = timedQuestions.length * 1.5;
-			for (const key of ['timed', 'relaxed']) {
-				for (const player of ['parent', 'child']) {
-					const points = stagePoints[key][player];
-					const formatted = Number.isInteger(points) ? String(points) : points.toFixed(1);
-					document.querySelector(`#${key}-${player}-fill`).style.width = `${points / commonScale * 100}%`;
-					document.querySelector(`#${key}-${player}-value`).textContent = `${formatted}点`;
-				}
+			const commonScale = questions.length * 1.5;
+			for (const player of ['parent', 'child']) {
+				const points = quizPoints[player];
+				const formatted = Number.isInteger(points) ? String(points) : points.toFixed(1);
+				document.querySelector(`#quiz-${player}-fill`).style.width = `${points / commonScale * 100}%`;
+				renderFurigana(document.querySelector(`#quiz-${player}-value`), `${formatted}{点|てん}`);
 			}
 		}
 
@@ -781,21 +1062,18 @@
 			document.body.className = 'show-final-results';
 			document.querySelector('#final-result').classList.add('is-visible');
 			restartButton.classList.add('is-visible');
+			const finalResult = document.querySelector('#final-result');
+			fitOverlayContent(finalResult, finalResult.querySelector('.final-result-content'));
 		}
 
 		function updateAccuracyGraph() {
-			const totalQuestions = timedQuestions.length + relaxedQuestions.length;
+			const totalQuestions = questions.length;
 			const parentPercent = Math.round(playerStats.parent.correct / totalQuestions * 100);
 			const childPercent = Math.round(playerStats.child.correct / totalQuestions * 100);
-			const combinedCorrect = playerStats.parent.correct + playerStats.child.correct;
-			const combinedTotal = totalQuestions * 2;
-			const combinedPercent = Math.round(combinedCorrect / combinedTotal * 100);
 			parentAccuracyFill.style.width = `${parentPercent}%`;
 			childAccuracyFill.style.width = `${childPercent}%`;
-			combinedAccuracyFill.style.width = `${combinedPercent}%`;
-			parentAccuracyValue.textContent = `${playerStats.parent.correct} / ${totalQuestions}問・${parentPercent}%`;
-			childAccuracyValue.textContent = `${playerStats.child.correct} / ${totalQuestions}問・${childPercent}%`;
-			combinedAccuracyValue.textContent = `${combinedCorrect} / ${combinedTotal}回答・${combinedPercent}%`;
+			renderFurigana(parentAccuracyValue, `${playerStats.parent.correct} / ${totalQuestions}{問|もん}`);
+			renderFurigana(childAccuracyValue, `${playerStats.child.correct} / ${totalQuestions}{問|もん}`);
 		}
 
 		pinButtons.forEach((pin) => {
@@ -804,22 +1082,58 @@
 			pin.addEventListener('pointerup', endPinDrag);
 			pin.addEventListener('pointercancel', endPinDrag);
 		});
+		window.addEventListener('resize', fitVisibleScreens);
+		window.addEventListener('resize', renderSpotMarkers);
+		window.addEventListener('scroll', updatePinGuidance, { passive: true });
+		spotQuestionImage.addEventListener('load', renderSpotMarkers);
+		spotBackgroundImage.addEventListener('click', addSpotMarker);
+		spotConfirm.addEventListener('click', finalizeSpotQuestion);
+		document.querySelector('#spot-clear').addEventListener('click', () => {
+			spotMarks = [];
+			renderSpotMarkers();
+			spotCount.textContent = spotPrompt;
+			spotConfirm.disabled = true;
+		});
+		showResultsButton.addEventListener('click', continueAfterSpot);
 		answerSubmit.addEventListener('click', submitAnswers);
 		continueButton.addEventListener('click', continueAfterAnswer);
+		startSpotButton.addEventListener('click', startSpotStage);
 		restartButton.addEventListener('click', () => {
 			window.location.href = 'https://forms.cloud.microsoft/r/PjYv8RwcjT';
 		});
 		const launchParams = new URLSearchParams(window.location.search);
-		const devStage = launchParams.get('stage');
-		if (launchParams.get('dev') === '1' && ['timed', 'relaxed'].includes(devStage)) {
-			phase = devStage;
-			const questionTotal = currentQuestions().length;
+		if (launchParams.get('dev') === '1' && launchParams.get('stage') !== 'spot' && launchParams.has('q')) {
+			const questionTotal = questions.length;
 			const requestedQuestion = Number.parseInt(launchParams.get('q') || '1', 10);
 			questionIndex = Math.max(0, Math.min(questionTotal - 1, requestedQuestion - 1));
 		}
-		updateWorld();
+		pinButtons.forEach((pin) => {
+			const player = pin.dataset.player;
+			renderFurigana(pin, `{{${player}}}`);
+			pin.setAttribute('aria-label', `${playerNames[player]}のピンをドラッグ`);
+		});
+		document.querySelectorAll('[data-player-name]').forEach((label) => {
+			renderFurigana(label, `{{${label.dataset.playerName}}}`);
+		});
+		renderFurigana(document.querySelector('#rank-label'), '{{parent}}と{{child}}の{称号|しょうごう}');
+		renderFurigana(document.querySelector('#stage-score-note'), 'シンクロボーナスは{{parent}}と{{child}}に1.5{点|てん}ずつ{配分|はいぶん}');
+		document.querySelector('.stage-score-chart').setAttribute('aria-label', `クイズでの${playerNames.parent}と${playerNames.child}のポイント比較`);
+		document.querySelector('.final-accuracy').setAttribute('aria-label', `クイズでの${playerNames.parent}と${playerNames.child}それぞれの正答率`);
 		updateRank();
 		setQuestion();
+		new ResizeObserver(fitVisibleScreens).observe(main);
+		fitQuizScreen();
+		if (launchParams.get('dev') === '1' && launchParams.get('stage') === 'spot') {
+			if (launchParams.has('q')) {
+				const requestedQuestion = Number(launchParams.get('q'));
+				if (Number.isInteger(requestedQuestion) && requestedQuestion >= 1 && requestedQuestion <= spotQuestions.length) {
+					spotQuestionIndex = requestedQuestion - 1;
+				} else {
+					console.error('最終ステージの問題番号が不正です:', launchParams.get('q'));
+				}
+			}
+			startSpotStage();
+		}
 	</script>
 </body>
 </html>

@@ -24,8 +24,8 @@
     a:hover, a:focus-visible { border-color: var(--accent); background: rgba(13, 148, 136, .22); outline: none; }
     .number { flex: 0 0 auto; color: var(--warm); font-size: 11px; font-weight: 900; }
     .question { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    rt { font-size: .5em; }
     .stage-final { border-bottom: 0; }
-    .final-link { display: inline-flex; min-width: 210px; min-height: 42px; border-color: rgba(251,191,36,.4); }
     @media (orientation: landscape) and (max-height: 500px) {
       main { padding: 8px max(18px, env(safe-area-inset-left)) 6px; }
       header { align-items: center; padding-bottom: 7px; }
@@ -40,7 +40,6 @@
       a { min-height: 32px; padding: 4px 6px; gap: 5px; }
       .question { font-size: 9px; }
       .number { font-size: 9px; }
-      .final-link { min-height: 34px; }
     }
     @media (max-width: 560px) and (orientation: portrait) {
       .question-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -51,48 +50,45 @@
 <body>
   <main>
     <header>
-      <div><p class="eyebrow">DEVELOPMENT ONLY</p><h1>クイズ開発メニュー</h1></div>
-      <p class="subtitle">確認したい問題を選ぶと、その画面から開始します。</p>
+      <div><p class="eyebrow">DEVELOPMENT ONLY</p><h1>クイズ<ruby>開発<rt>かいはつ</rt></ruby>メニュー</h1></div>
+      <p class="subtitle"><ruby>確認<rt>かくにん</rt></ruby>したい<ruby>問題<rt>もんだい</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶと、その<ruby>画面<rt>がめん</rt></ruby>から<ruby>開始<rt>かいし</rt></ruby>します。</p>
     </header>
 
-    <section class="stage" aria-labelledby="stage-one-title">
-      <div class="stage-heading"><h2 id="stage-one-title">第1ステージ: 時間制限あり</h2><span>20秒 / 11問</span></div>
-      <nav id="timed-questions" class="question-grid" aria-label="第1ステージの問題"></nav>
-    </section>
-
-    <section class="stage" aria-labelledby="stage-two-title">
-      <div class="stage-heading"><h2 id="stage-two-title">第2ステージ: 時間制限なし</h2><span>5問</span></div>
-      <nav id="relaxed-questions" class="question-grid" aria-label="第2ステージの問題"></nav>
+    <section class="stage" aria-labelledby="quiz-title">
+      <div class="stage-heading"><h2 id="quiz-title">クイズ（<ruby>時間制限<rt>じかんせいげん</rt></ruby>なし）</h2><span>10<ruby>問<rt>もん</rt></ruby></span></div>
+      <nav id="quiz-questions" class="question-grid" aria-label="クイズの問題"></nav>
     </section>
 
     <section class="stage stage-final" aria-labelledby="stage-final-title">
-      <div class="stage-heading"><h2 id="stage-final-title">最終ステージ</h2><span>地獄の問題箇所探し</span></div>
-      <a class="final-link" href="index.html?dev=1&amp;stage=spot"><span class="number">GO</span><span class="question">問題箇所探しへ直接移動</span></a>
+      <div class="stage-heading"><h2 id="stage-final-title"><ruby>最終<rt>さいしゅう</rt></ruby>ステージ</h2><span><ruby>危険<rt>きけん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby><ruby>探<rt>さが</rt></ruby>し（3<ruby>問<rt>もん</rt></ruby>）</span></div>
+      <nav class="question-grid" aria-label="最終ステージの問題">
+        <a href="index.html?dev=1&amp;stage=spot&amp;q=1"><span class="number">01</span><span class="question"><ruby>第<rt>だい</rt></ruby>1<ruby>問<rt>もん</rt></ruby></span></a>
+        <a href="index.html?dev=1&amp;stage=spot&amp;q=2"><span class="number">02</span><span class="question"><ruby>第<rt>だい</rt></ruby>2<ruby>問<rt>もん</rt></ruby></span></a>
+        <a href="index.html?dev=1&amp;stage=spot&amp;q=3"><span class="number">03</span><span class="question"><ruby>第<rt>だい</rt></ruby>3<ruby>問<rt>もん</rt></ruby></span></a>
+      </nav>
     </section>
   </main>
   <script>
-    const timedLabels = [
-      '車道の左側', '停車中の車', '止まれの標識', '自転車の二人乗り', '横断歩道の歩行者', '雨の日のかさ',
-      '歩道の歩行者', 'イヤホンの使用', '友達との並進', 'ハンドルの荷物', 'ブレーキの安全点検'
-    ];
-    const relaxedLabels = [
-      '赤信号と罰金', '青切符の対象年齢', '歩道を通れる条件', '歩道の通行位置', '車道通行の年齢'
+    const labels = [
+      '<ruby>車道通行<rt>しゃどうつうこう</rt></ruby>の<ruby>年齢<rt>ねんれい</rt></ruby>', '<ruby>青切符<rt>あおきっぷ</rt></ruby>の<ruby>対象年齢<rt>たいしょうねんれい</rt></ruby>', '<ruby>車道<rt>しゃどう</rt></ruby>の<ruby>左側<rt>ひだりがわ</rt></ruby>', '<ruby>止<rt>と</rt></ruby>まれの<ruby>標識<rt>ひょうしき</rt></ruby>', '<ruby>横断歩道<rt>おうだんほどう</rt></ruby>の<ruby>歩行者<rt>ほこうしゃ</rt></ruby>',
+      '<ruby>友達<rt>ともだち</rt></ruby>との<ruby>並進<rt>へいしん</rt></ruby>', 'ハンドルの<ruby>荷物<rt>にもつ</rt></ruby>', 'ブレーキの<ruby>安全点検<rt>あんぜんてんけん</rt></ruby>', '<ruby>歩道<rt>ほどう</rt></ruby>を<ruby>通<rt>とお</rt></ruby>れる<ruby>条件<rt>じょうけん</rt></ruby>', '<ruby>歩道<rt>ほどう</rt></ruby>の<ruby>通行位置<rt>つうこういち</rt></ruby>'
     ];
 
-    function addQuestionLinks(containerId, stage, labels) {
+    function addQuestionLinks(containerId, labels) {
       const container = document.querySelector(`#${containerId}`);
       labels.forEach((label, index) => {
         const link = document.createElement('a');
-        link.href = `index.html?dev=1&stage=${stage}&q=${index + 1}`;
+        link.href = `index.html?dev=1&q=${index + 1}`;
         link.innerHTML = `<span class="number">${String(index + 1).padStart(2, '0')}</span><span class="question"></span>`;
-        link.querySelector('.question').textContent = label;
-        link.setAttribute('aria-label', `${index + 1}問目: ${label}へ移動`);
+        link.querySelector('.question').innerHTML = label;
+        const plainLabel = link.querySelector('.question').cloneNode(true);
+        plainLabel.querySelectorAll('rt').forEach((reading) => reading.remove());
+        link.setAttribute('aria-label', `${index + 1}問目: ${plainLabel.textContent}へ移動`);
         container.append(link);
       });
     }
 
-    addQuestionLinks('timed-questions', 'timed', timedLabels);
-    addQuestionLinks('relaxed-questions', 'relaxed', relaxedLabels);
+    addQuestionLinks('quiz-questions', labels);
   </script>
 </body>
 </html>
